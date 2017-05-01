@@ -24,30 +24,26 @@ Sub Copy_Marked_Rows()
 
         'Pastes the selected cells on the clinical Documentation Tab
         Sheets("Clinical Documentation").Select
-        Range("B3").Select
+        Range("A3").Select
         ActiveSheet.Paste
+        Rows("3:3").Select
+        Selection.Delete Shift:=xlUp
 
         'Pastes cells on Unmapped Codes tab
         Sheets("Unmapped Codes").Select
-        Range("B3").Select
+        Range("A3").Select
         ActiveSheet.Paste
+        Rows("3:3").Select
+        Selection.Delete Shift:=xlUp
 
         'Pastes cells on Potential Mapping issues tab
         Sheets("Potential Mapping Issues").Select
-        Range("B3").Select
+        Range("A3").Select
         ActiveSheet.Paste
         Rows("3:3").Select
         Application.CutCopyMode = False
         Selection.Delete Shift:=xlUp
 
-        'Deletes the extra header row?
-        Sheets("Unmapped Codes").Select
-        Rows("3:3").Select
-        Selection.Delete Shift:=xlUp
-
-        Sheets("Clinical Documentation").Select
-        Rows("3:3").Select
-        Selection.Delete Shift:=xlUp
 
     Else
 
