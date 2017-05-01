@@ -1,0 +1,6 @@
+
+
+if cs 72 exists (non zero) check if its mapped, include 1 line if it isnt mapped.
+if CS 14003 " "" " " " " " "
+If nomenclatures exist, "" " " " " " "  "  ", include a line for each unmapped omenclature
+If all nomenclatures are mapped but cs 72 or cs 14003 exists and isn't mapped, there should still be a single line included
