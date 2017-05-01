@@ -76,4 +76,8 @@ Private Sub Apply_Additional_Columns_And_Formulas()
 
     Range("A1").Select
 
+    ' Ensures calculations is set to automatic This is needed for lookups to work
+    Application.Calculation = xlCalculationAutomatic
+
+
 End Sub
