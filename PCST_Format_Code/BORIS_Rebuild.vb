@@ -766,7 +766,7 @@ UserNameErr:
     Code_Sheet = code
 
     ' Special instructions for code set 72
-    If code = "72" Then
+    If code = "72" or code = "Nomenclature - Patient Care" Then
 
       ' Populates the headers on the CS72 sheet
       Off_Count = 0
