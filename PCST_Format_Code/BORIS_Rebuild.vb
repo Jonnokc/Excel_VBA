@@ -48,6 +48,7 @@ Sub BORIS_PCST()
   Dim Code_Short As Variant
   Dim New_Value As Variant
   Dim code As Variant
+  Dim ClearFormattingCheck As Variant
   Dim StartCell As Range
   Dim rList As Range
   Dim User_Name As String
@@ -75,6 +76,7 @@ Sub BORIS_PCST()
   Dim First_Time As Boolean
   Dim Header_Check As Boolean
   Dim exists As Boolean
+  Dim ClearFormatting As Boolean
   Dim LR As Long
 
 
@@ -88,7 +90,7 @@ Sub BORIS_PCST()
   ' DEBUG
 
   ' Error Handling
-  On Error GoTo ErrHandler
+  ' On Error GoTo ErrHandler
 
   ' Arrays used for sheet creation.
 
@@ -167,10 +169,9 @@ Retry_UserID:
   Save_Path = "C:\Users\" & User_Name & "\Documents\" & Project_Name & "_" & "PCST_Files"
 
 
-
   ' If the folder already exists then do nothing. Else make it.
   If Len(Dir(Save_Path, vbDirectory)) = 0 Then
-    On Error GoTo UserNameErr:
+    ' On Error GoTo UserNameErr:
     MkDir Save_Path    'Creates the folder
   Else
     Folder_Check = MsgBox("Looks like the folder already exists... Do you want to continue?", vbOKCancel + vbQuestion, "BORIS!")    'Folder already exists so continuing on.
@@ -188,6 +189,16 @@ UserNameErr:
     Resume Retry_UserID:
   End If
 
+  ClearFormattingCheck = MsgBox("Is it ok to clear all cell formatting or do you want to keep cell coloring?", vbOKCancel + vbQuestion, "BORIS!")
+    If ClearFormattingCheck = vbOK then
+      ClearFormatting = True
+    Else
+      ClearFormatting = False
+    End If
+
+
+
+
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   ' PRIMARY - Formats worksheets for copying to new workbook
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -204,7 +215,7 @@ UserNameErr:
 
 
   ' Switches Error handling back to normal
-  On Error GoTo ErrHandler
+  ' On Error GoTo ErrHandler
 
   For i = 0 To UBound(Val_Wk_Array)
 
@@ -223,11 +234,11 @@ UserNameErr:
         .Unlist
       End With
       'Reverts the color of the range back to standard.
-      With rList
-        .Interior.ColorIndex = xlColorIndexNone
-        .Font.ColorIndex = xlColorIndexAutomatic
-        .Borders.LineStyle = xlLineStyleNone
-      End With
+      ' With rList
+      '   .Interior.ColorIndex = xlColorIndexNone
+      '   .Font.ColorIndex = xlColorIndexAutomatic
+      '   .Borders.LineStyle = xlLineStyleNone
+      ' End With
     End If
 
     ' Sets all cells on sheet to a table.
@@ -429,8 +440,7 @@ UserNameErr:
       Windows(Source_Name & ".xlsx").Activate
       Sheets(CurrentSheet).Select
       Range("A1").Select
-      Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
-      :=False, Transpose:=False
+      ActiveSheet.Paste
 
       ' Sets header for code short name column
       If CurrentSheet = Val_Wk_Array(1) Then
@@ -444,22 +454,26 @@ UserNameErr:
       Windows(Source_Name & ".xlsx").Activate
       Sheets(Val_Wk_Array(i)).Select
 
-      Set sht = Worksheets(Val_Wk_Array(i))
-      Set StartCell = Range("A1")
+      ' If table was not created when pasting values, then create the table
+      If ActiveSheet.ListObjects.Count = 0 Then
 
-      LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
-      LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
+        Set sht = Worksheets(Val_Wk_Array(i))
+        Set StartCell = Range("A1")
 
-      sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
+        LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
+        LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
 
-      ' Converts range to table.
-      Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
-      tbl.Name = Val_Tbl_Name_Array(i)
-      tbl.TableStyle = "TableStyleLight12"
+        sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
 
-      ' Filters to remove blank lines
-      ActiveSheet.ListObjects(1).Range.AutoFilter Field:=5, _
-      Criteria1:="<>"
+        ' Converts range to table.
+        Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
+        tbl.Name = Val_Tbl_Name_Array(i)
+        tbl.TableStyle = "TableStyleLight12"
+
+        ' Filters to remove blank lines
+        ActiveSheet.ListObjects(1).Range.AutoFilter Field:=5, _
+        Criteria1:="<>"
+      End If
 
     Next i
 
@@ -982,7 +996,7 @@ UserNameErr:
 
       Sheets(Val_Wk_Array(2)).Select
 
-      Sheets(Val_Wk_Array(2)).ListObjects("Health_Maint_Table").Range.AutoFilter Field:=Health_Maint_Num_Array(9), _
+      Sheets(Val_Wk_Array(2)).ListObjects("Health_Maint_Table").Range.AutoFilter Field:=Health_Maint_Num_Array(10), _
       Criteria1:=Source_Name, Operator:=xlAnd
 
       Set tbl = Sheets(Val_Wk_Array(2)).ListObjects(1)
@@ -1006,7 +1020,7 @@ UserNameErr:
 
         ' Copies the Source Column to Source
         Sheets(Val_Wk_Array(2)).Select
-        Range(Health_Maint_Ltr_Array(10) & "2:" & Health_Maint_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & Next_Blank_Row)
+        Range(Health_Maint_Ltr_Array(10) & "2:" & Health_Maint_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
 
         ' Copies Expect_Meaning Column to Name
         Sheets(Val_Wk_Array(2)).Select
@@ -1361,8 +1375,17 @@ UserNameErr:
 
     sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
 
-    ' Clears all extra formats from the sheet
-    Selection.ClearFormats
+    ' If User wants to clear all the formatting then clear all, else clear boarders
+    If ClearFormatting = True Then
+      Selection.ClearFormats
+    Else
+      Selection.Borders.LineStyle = xlNone
+    End If
+
+    ' Clears all data validation which could be copied
+    For Each Sheet in Worksheets
+      Sheet.Cells.Validation.Delete
+    Next Sheet
 
     Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
     tbl.Name = Sheet_Name
