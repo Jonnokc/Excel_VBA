@@ -343,9 +343,7 @@ Private Sub Nomenclature_Row_Finder()
     Sheets(WkNames(2)).ListObjects("Val_Tbl").Range.AutoFilter Field:=ValidationSheetNumHeaders(8), Criteria1:= _
     EventCode, Operator:=xlAnd
 
-    Set StartCell = Range("A1")
-
-    Validation_Visible_Row = StartCell.SpecialCells(xlCellTypeLastCell).Row
+    Validation_Visible_Row = Range("A2", Cells(Rows.Count, "A").End(xlUp)).SpecialCells(xlCellTypeVisible).Row
 
     Rows(Validation_Visible_Row).Select
     Selection.Copy
