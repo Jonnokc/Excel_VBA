@@ -67,6 +67,7 @@ Sub BORIS_PCST()
   Dim Sources_Check As Integer
   Dim Off_Count As Integer
   Dim col_Count As Integer
+  Dim ArraySize As Integer
   Dim i As Integer
   Dim LastRow As Long
   Dim LastColumn As Long
@@ -97,25 +98,25 @@ Sub BORIS_PCST()
   Val_Wk_Array = Array("Clinical Documentation", "Unmapped Codes", "Health Maintenance Summary")
   Val_Tbl_Name_Array = Array("Clinical_Table", "Unmapped_Table", "Health_Maint_Table")
 
-  CS_72_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System")
-  CS_72_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System")
-  CS_72_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System")
+  CS_72_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
+  CS_72_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System" , "Internal Data Source")
+  CS_72_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
 
-  Gen_Sht_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System")
-  Gen_Sht_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System")
-  Gen_Sht_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System")
+  Gen_Sht_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
+  Gen_Sht_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
+  Gen_Sht_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
 
-  Clin_Doc_Col_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team")
-  Clin_Doc_Col_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team")
-  Clin_Doc_Col_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team")
+  Clin_Doc_Col_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Data Source")
+  Clin_Doc_Col_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Data Source")
+  Clin_Doc_Col_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Data Source")
 
-  Unmapped_Col_Num_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name")
-  Unmapped_Col_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name")
-  Unmapped_Col_Name_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name")
+  Unmapped_Col_Num_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Data Source")
+  Unmapped_Col_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Data Source")
+  Unmapped_Col_Name_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Data Source")
 
-  Health_Maint_Num_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE")
-  Health_Maint_Ltr_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE")
-  Health_Maint_Name_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE")
+  Health_Maint_Num_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Data Source")
+  Health_Maint_Ltr_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Data Source")
+  Health_Maint_Name_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Data Source")
 
   'Prompts user to confirm they have reviewed the data in the validation form BEFORE running this.
   Confirm_Scrubbed = MsgBox("*NOTICE* It is highly advised that you review the data on the Unmapped Codes, Clinical Documentation, and the Health Maintenance Summary Sheet before running this program." & vbNewLine & vbNewLine & "You should delete unneeded lines and review concept endings to confirm the data is correct before proceeding. Otherwise errors will be multiplied accross all newly created files." & vbNewLine & vbNewLine & "Once you click OK BORIS will start. Follow on screen prompts otherwise leave your computer alone until BORIS is done.", vbOKCancel + vbQuestion, "BORIS!")
@@ -189,8 +190,8 @@ UserNameErr:
     Resume Retry_UserID:
   End If
 
-  ClearFormattingCheck = MsgBox("Is it ok to clear all cell formatting or do you want to keep cell coloring?", vbOKCancel + vbQuestion, "BORIS!")
-    If ClearFormattingCheck = vbOK then
+  ClearFormattingCheck = MsgBox("Is it ok to clear all cell formatting or do you want to keep cell coloring?", vbyesno + vbQuestion, "BORIS!")
+    If ClearFormattingCheck = vbyes then
       ClearFormatting = True
     Else
       ClearFormatting = False
@@ -780,7 +781,7 @@ UserNameErr:
     Code_Sheet = code
 
     ' Special instructions for code set 72
-    If code = "72" or code = "Nomenclature - Patient Care" Then
+    If code = "72" Then
 
       ' Populates the headers on the CS72 sheet
       Off_Count = 0
@@ -860,7 +861,6 @@ UserNameErr:
         Sheets(Val_Wk_Array(0)).Select
         Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
 
-
         ' Copies DTA Column
         Sheets(Val_Wk_Array(0)).Select
         Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
@@ -881,21 +881,21 @@ UserNameErr:
         Sheets(Val_Wk_Array(0)).Select
         Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
 
-        ' Copies NomenclatureID Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
-
-        ' Copies Nomenclature Display Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
-
-        ' Copies TaskAssay Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
-
-        ' Copies the Nomenclature Notes Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
+        ' ' Copies NomenclatureID Column
+        ' Sheets(Val_Wk_Array(0)).Select
+        ' Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
+        '
+        ' ' Copies Nomenclature Display Column
+        ' Sheets(Val_Wk_Array(0)).Select
+        ' Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
+        '
+        ' ' Copies TaskAssay Column
+        ' Sheets(Val_Wk_Array(0)).Select
+        ' Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
+        '
+        ' ' Copies the Nomenclature Notes Column
+        ' Sheets(Val_Wk_Array(0)).Select
+        ' Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
 
         ' Copies the Social History Notes Column
         Sheets(Val_Wk_Array(0)).Select
@@ -913,6 +913,9 @@ UserNameErr:
         Sheets(Val_Wk_Array(0)).Select
         Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
 
+        ' Copies the Internal Data Source Column
+        Sheets(Val_Wk_Array(0)).Select
+        Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
 
       End If
 
@@ -988,6 +991,10 @@ UserNameErr:
         Sheets(Val_Wk_Array(1)).Select
         Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & Next_Blank_Row)
 
+        ' Copies the Internal Data Source Column
+        Sheets(Val_Wk_Array(1)).Select
+        Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+
       End If
 
 
@@ -1042,13 +1049,19 @@ UserNameErr:
         Sheets(Val_Wk_Array(2)).Select
         Range(Health_Maint_Ltr_Array(9) & "2:" & Health_Maint_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
 
+        ' Copies the Internal Data Source Column
+        Sheets(Val_Wk_Array(2)).Select
+        Range(Health_Maint_Ltr_Array(11) & "2:" & Health_Maint_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+
       End If
 
       ' SUB - Removes duplicates from the CS 72 sheet
       ''''''''''''''''''''''''''''''''''''''''''''''''
+      ' Dynamically determines size of array
+      ArraySize = UBound(CS_72_Header_Ltr_Array)
 
       ' Removes duplicates by source, EVcode, EventDisplay
-      Sheets(Code_Sheet).Range("$A$1:" & CS_72_Header_Ltr_Array(22) & LR).RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
+      Sheets(Code_Sheet).Range("$A$1:" & CS_72_Header_Ltr_Array(ArraySize) & LR).RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
       CS_72_Header_Num_Array(8), CS_72_Header_Num_Array(9)), _
       Header:=xlYes
 
@@ -1056,7 +1069,7 @@ UserNameErr:
       '       SUB - Populates headers for all other sheets
       '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-    Else
+    Elseif code <> "Nomenclature - Patient Care" Then
 
       Off_Count = 0
       For i = 0 To UBound(Gen_Sht_Header_Name_Array)
@@ -1152,6 +1165,10 @@ UserNameErr:
         Sheets(Val_Wk_Array(1)).Select
         Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(15) & Next_Blank_Row)
 
+        ' Copies the Internal Data Source Column
+        Sheets(Val_Wk_Array(1)).Select
+        Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(19) & Next_Blank_Row)
+
       End If
 
     End If
@@ -1161,165 +1178,165 @@ UserNameErr:
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   ' PRIMARY - Populates Nomenclature ID data onto the Nomenclature - PTCARE sheet
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  Sheets("Clinical Documentation").Select
-
-  'Filters the clinical doc table by source and makes sure nomenclature ID
-  Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
-  Criteria1:=Source_Name, Operator:=xlAnd
-
-  ' Filters to make sure nomenclature ID is not blank
-  Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(12), _
-  Criteria1:="<>"
-
-  Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(15), _
-  Criteria1:= _
-  "<>*This nomenclature is mapped but the event code will need to be mapped if this will be used to complete the measure.*" _
-  , Operator:=xlAnd, Criteria2:= _
-  "<>*This event code is mapped but the nomenclature is not mapped and should be if this will be used to complete the measure.*"
-
-
-  Set Table_Obj = ActiveSheet.ListObjects(1)
-
-  'Checks filtered table for visible data.
-  If Table_Obj.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-    Table_ObjIsVisible = True
-  Else
-    Table_ObjIsVisible = False
-  End If
-
-  ' If data is visible then copy data.
-  If Table_ObjIsVisible = True Then
-    ' Check to see if Nomenclature - Patient Care sheet already exists
-    For Each Sheet In Worksheets
-      exists = False
-      If Sheet.Name = "Nomenclature - Patient Care" Then
-        exists = True
-        Exit For
-      End If
-    Next Sheet
-
-    ' If sheet does NOT exist, then create the sheet and populate headers
-    If exists = False Then
-      ActiveWorkbook.Sheets.Add(After:=Worksheets(1)).Name = "Nomenclature - Patient Care"
-
-      ' Finds the last row of the Clinical Documentation Sheet for copy Range
-      Sheets(Val_Wk_Array(0)).Select
-      LR = Range("A" & Rows.Count).End(xlUp).Row
-
-      Code_Sheet = "Nomenclature - Patient Care"
-
-      ' Populates the headers on the PTCare sheet
-      Off_Count = 0
-      For i = 0 To UBound(CS_72_Header_Name_Array)
-        Sheets(Code_Sheet).Range("A1").Offset(0, Off_Count).Value = CS_72_Header_Name_Array(i)
-        Off_Count = Off_Count + 1
-      Next i
-    End If
-
-    ' Records the Addresses of the PTCare headers
-    Sheets(Code_Sheet).Select
-    Range("A1").Select
-    Range("A1", Selection.End(xlToRight)).Name = "Header_row"
-
-    For i = 0 To UBound(CS_72_Header_Num_Array)
-      col_Count = 0
-      For Each Header In Range("Header_row")
-        col_Count = col_Count + 1
-        If LCase(CS_72_Header_Num_Array(i)) = LCase(Header) Then
-          CS_72_Header_Ltr_Array(i) = Mid(Header.Address, 2, 1)
-          CS_72_Header_Num_Array(i) = col_Count
-          Exit For
-        End If
-      Next Header
-    Next i
-
-    ' Copies Registry Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
-
-    ' Copies Measure Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
-
-    ' Copies Concept Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
-
-    ' Copies Source Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
-
-    ' Copies DocumentType Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
-
-    ' Copies Name Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
-
-    ' Copies Section Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
-
-    ' Copies DTA Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
-
-    ' Copies EventCode Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
-
-    ' Copies EventDisplay Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
-
-    ' Copies ESH Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
-
-    ' Copies ControlType Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
-
-    ' Copies NomenclatureID Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
-
-    ' Copies Nomenclature Display Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
-
-    ' Copies TaskAssay Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
-
-    ' Copies the Nomenclature Notes Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
-
-    ' Copies the Social History Notes Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
-
-    ' Copies the Grid Notes Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
-
-    ' Copies the Freetext Notes Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
-
-    ' Copies the Team Column
-    Sheets(Val_Wk_Array(0)).Select
-    Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
-
-
-    '  Removes dups on the PTCare sheet by source, nomenclature ID, Nomenclature Display
-    Sheets(Code_Sheet).Range("$A$1:$W$700").RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
-    CS_72_Header_Num_Array(12), CS_72_Header_Num_Array(13)), _
-    Header:=xlYes
-
-  End If
+  ' Sheets("Clinical Documentation").Select
+  '
+  ' 'Filters the clinical doc table by source and makes sure nomenclature ID
+  ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
+  ' Criteria1:=Source_Name, Operator:=xlAnd
+  '
+  ' ' Filters to make sure nomenclature ID is not blank
+  ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(12), _
+  ' Criteria1:="<>"
+  '
+  ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(15), _
+  ' Criteria1:= _
+  ' "<>*This nomenclature is mapped but the event code will need to be mapped if this will be used to complete the measure.*" _
+  ' , Operator:=xlAnd, Criteria2:= _
+  ' "<>*This event code is mapped but the nomenclature is not mapped and should be if this will be used to complete the measure.*"
+  '
+  '
+  ' Set Table_Obj = ActiveSheet.ListObjects(1)
+  '
+  ' 'Checks filtered table for visible data.
+  ' If Table_Obj.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+  '   Table_ObjIsVisible = True
+  ' Else
+  '   Table_ObjIsVisible = False
+  ' End If
+  '
+  ' ' If data is visible then copy data.
+  ' If Table_ObjIsVisible = True Then
+  '   ' Check to see if Nomenclature - Patient Care sheet already exists
+  '   For Each Sheet In Worksheets
+  '     exists = False
+  '     If Sheet.Name = "Nomenclature - Patient Care" Then
+  '       exists = True
+  '       Exit For
+  '     End If
+  '   Next Sheet
+  '
+  '   ' If sheet does NOT exist, then create the sheet and populate headers
+  '   If exists = False Then
+  '     ActiveWorkbook.Sheets.Add(After:=Worksheets(1)).Name = "Nomenclature - Patient Care"
+  '
+  '     ' Finds the last row of the Clinical Documentation Sheet for copy Range
+  '     Sheets(Val_Wk_Array(0)).Select
+  '     LR = Range("A" & Rows.Count).End(xlUp).Row
+  '
+  '     Code_Sheet = "Nomenclature - Patient Care"
+  '
+  '     ' Populates the headers on the PTCare sheet
+  '     Off_Count = 0
+  '     For i = 0 To UBound(CS_72_Header_Name_Array)
+  '       Sheets(Code_Sheet).Range("A1").Offset(0, Off_Count).Value = CS_72_Header_Name_Array(i)
+  '       Off_Count = Off_Count + 1
+  '     Next i
+  '   End If
+  '
+  '   ' Records the Addresses of the PTCare headers
+  '   Sheets(Code_Sheet).Select
+  '   Range("A1").Select
+  '   Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+  '
+  '   For i = 0 To UBound(CS_72_Header_Num_Array)
+  '     col_Count = 0
+  '     For Each Header In Range("Header_row")
+  '       col_Count = col_Count + 1
+  '       If LCase(CS_72_Header_Num_Array(i)) = LCase(Header) Then
+  '         CS_72_Header_Ltr_Array(i) = Mid(Header.Address, 2, 1)
+  '         CS_72_Header_Num_Array(i) = col_Count
+  '         Exit For
+  '       End If
+  '     Next Header
+  '   Next i
+  '
+  '   ' Copies Registry Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
+  '
+  '   ' Copies Measure Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
+  '
+  '   ' Copies Concept Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
+  '
+  '   ' Copies Source Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
+  '
+  '   ' Copies DocumentType Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
+  '
+  '   ' Copies Name Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
+  '
+  '   ' Copies Section Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
+  '
+  '   ' Copies DTA Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
+  '
+  '   ' Copies EventCode Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
+  '
+  '   ' Copies EventDisplay Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
+  '
+  '   ' Copies ESH Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
+  '
+  '   ' Copies ControlType Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
+  '
+  '   ' Copies NomenclatureID Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
+  '
+  '   ' Copies Nomenclature Display Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
+  '
+  '   ' Copies TaskAssay Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
+  '
+  '   ' Copies the Nomenclature Notes Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
+  '
+  '   ' Copies the Social History Notes Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
+  '
+  '   ' Copies the Grid Notes Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
+  '
+  '   ' Copies the Freetext Notes Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
+  '
+  '   ' Copies the Team Column
+  '   Sheets(Val_Wk_Array(0)).Select
+  '   Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
+  '
+  '
+  '   '  Removes dups on the PTCare sheet by source, nomenclature ID, Nomenclature Display
+  '   Sheets(Code_Sheet).Range("$A$1:$W$700").RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
+  '   CS_72_Header_Num_Array(12), CS_72_Header_Num_Array(13)), _
+  '   Header:=xlYes
+  '
+  ' End If
 
 
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1382,18 +1399,17 @@ UserNameErr:
       Selection.Borders.LineStyle = xlNone
     End If
 
-    ' Clears all data validation which could be copied
-    For Each Sheet in Worksheets
-      Sheet.Cells.Validation.Delete
-    Next Sheet
-
     Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
     tbl.Name = Sheet_Name
     tbl.TableStyle = "TableStyleLight9"
     Columns.AutoFit
     Range("A1").Select
 
+    ' Clears all data validation which could be copied
+    Sheet.Cells.Validation.Delete
+
   Next Sheet
+
 
   '
   '  SUB - Aligns Index Sheet
