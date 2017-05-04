@@ -99,7 +99,7 @@ Sub BORIS_PCST()
   Val_Tbl_Name_Array = Array("Clinical_Table", "Unmapped_Table", "Health_Maint_Table")
 
   CS_72_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
-  CS_72_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System" , "Internal Data Source")
+  CS_72_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
   CS_72_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
 
   Gen_Sht_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
@@ -190,8 +190,8 @@ UserNameErr:
     Resume Retry_UserID:
   End If
 
-  ClearFormattingCheck = MsgBox("Is it ok to clear all cell formatting or do you want to keep cell coloring?", vbyesno + vbQuestion, "BORIS!")
-    If ClearFormattingCheck = vbyes then
+  ClearFormattingCheck = MsgBox("Is it ok to clear all cell formatting or do you want to keep cell coloring?", vbYesNo + vbQuestion, "BORIS!")
+    If ClearFormattingCheck = vbYes Then
       ClearFormatting = True
     Else
       ClearFormatting = False
@@ -285,7 +285,7 @@ UserNameErr:
 
 
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  'PRMARY - CREATES THE SOURCE CODE SHEET AND TABLE FOR LOOP ON THE VALIDATION FORM
+  'PRIMARY - CREATES THE SOURCE CODE SHEET AND TABLE FOR LOOP ON THE VALIDATION FORM
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
   ' Disables screen alert which would prompt user to confirm sheet deletion.
@@ -310,18 +310,43 @@ UserNameErr:
 
   ' Assigns starting value to Next Blank Row
   Next_Blank_Row = Sheets("Sources List").Range("A" & Rows.Count).End(xlUp).Row + 1
-  ' Loops through the sheets to find all the sources and put them on the sources list sheet
+
+
+  ' SUB - Loops through the sheets to find all the sources and put them on the sources list sheet
   For i = 0 To UBound(Val_Wk_Array)
     CurrentSheet = Val_Wk_Array(i)
     Sheets(CurrentSheet).Select
 
-    If CurrentSheet <> "Health Maintenance Summary" Then
+    ' Finds the sources column for copying
+    If CurrentSheet <> Val_Wk_Array(2) Then
+      Range("A1").Select
+      Range("A2", Selection.End(xlToRight)).Name = "Header_row"
+
+      For Each Header In Range("Header_row")
+        Header_Check = False
+        If LCase(Header) = LCase(CS_72_Header_Ltr_Array(3)) Then
+          SourceCol = Mid(Header.Address, 2, 1)
+          Exit For
+        End If
+      Next Header
+
       'Copies sources from the sheets to the sources list
-      Range(ActiveSheet.Range("E2"), ActiveSheet.Range("E2").End(xlDown)).Copy Sheets("Sources List").Range("A" & Next_Blank_Row)
+      Range(ActiveSheet.Range(SourceCol & "2"), ActiveSheet.Range(SourceCol & "2").End(xlDown)).Copy Sheets("Sources List").Range("A" & Next_Blank_Row)
       Sheets("Sources List").Rows(Next_Blank_Row & ":" & Next_Blank_Row).Delete Shift:=xlUp
     Else
+
+        Range("A5").Select
+        Range("A5", Selection.End(xlToRight)).Name = "Header_row"
+
+        For Each Header In Range("Header_row")
+          Header_Check = False
+          If LCase(Header) = LCase(CS_72_Header_Ltr_Array(10)) Then
+            SourceCol = Mid(Header.Address, 2, 1)
+            Exit For
+          End If
+        Next Header
       'Copies sources from the sheets to the sources list
-      Range(ActiveSheet.Range("K5"), ActiveSheet.Range("K5").End(xlDown)).Copy Sheets("Sources List").Range("A" & Next_Blank_Row)
+      Range(ActiveSheet.Range(SourceCol & "5"), ActiveSheet.Range(SourceCol & "5").End(xlDown)).Copy Sheets("Sources List").Range("A" & Next_Blank_Row)
       Sheets("Sources List").Rows(Next_Blank_Row & ":" & Next_Blank_Row).Delete Shift:=xlUp
     End If
     Next_Blank_Row = Sheets("Sources List").Range("A" & Rows.Count).End(xlUp).Row + 1
@@ -1069,7 +1094,7 @@ UserNameErr:
       '       SUB - Populates headers for all other sheets
       '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-    Elseif code <> "Nomenclature - Patient Care" Then
+    ElseIf code <> "Nomenclature - Patient Care" Then
 
       Off_Count = 0
       For i = 0 To UBound(Gen_Sht_Header_Name_Array)
