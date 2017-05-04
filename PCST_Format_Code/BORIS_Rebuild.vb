@@ -858,89 +858,71 @@ UserNameErr:
         Sheets(Val_Wk_Array(0)).Select
         LR = Range("A" & Rows.Count).End(xlUp).Row
 
-        ' Copies Registry Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
+        With Sheets(Val_Wk_Array(0))
+          ' Copies Registry Column
+          Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
 
-        ' Copies Measure Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
+          ' Copies Measure Column
+          Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
 
-        ' Copies Concept Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
+          ' Copies Concept Column
+          Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
 
-        ' Copies Source Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
+          ' Copies Source Column
+          Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
 
-        ' Copies DocumentType Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
+          ' Copies DocumentType Column
+          Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
 
-        ' Copies Name Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
+          ' Copies Name Column
+          Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
 
-        ' Copies Section Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
+          ' Copies Section Column
+          Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
 
-        ' Copies DTA Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
+          ' Copies DTA Column
+          Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
 
-        ' Copies EventCode Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
+          ' Copies EventCode Column
+          Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
 
-        ' Copies EventDisplay Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
+          ' Copies EventDisplay Column
+          Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
 
-        ' Copies ESH Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
+          ' Copies ESH Column
+          Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
 
-        ' Copies ControlType Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
+          ' Copies ControlType Column
 
-        ' ' Copies NomenclatureID Column
-        ' Sheets(Val_Wk_Array(0)).Select
-        ' Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
-        '
-        ' ' Copies Nomenclature Display Column
-        ' Sheets(Val_Wk_Array(0)).Select
-        ' Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
-        '
-        ' ' Copies TaskAssay Column
-        ' Sheets(Val_Wk_Array(0)).Select
-        ' Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
-        '
-        ' ' Copies the Nomenclature Notes Column
-        ' Sheets(Val_Wk_Array(0)).Select
-        ' Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
+          Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
 
-        ' Copies the Social History Notes Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
+          ' ' Copies NomenclatureID Column
+          ' Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
+          '
+          ' ' Copies Nomenclature Display Column
+          ' Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
+          '
+          ' ' Copies TaskAssay Column
+          ' Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
+          '
+          ' ' Copies the Nomenclature Notes Column
+          ' Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
 
-        ' Copies the Grid Notes Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
+          ' Copies the Social History Notes Column
+          Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
 
-        ' Copies the Freetext Notes Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
+          ' Copies the Grid Notes Column
+          Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
 
-        ' Copies the Team Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
+          ' Copies the Freetext Notes Column
+          Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
 
-        ' Copies the Internal Data Source Column
-        Sheets(Val_Wk_Array(0)).Select
-        Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
+          ' Copies the Team Column
+          Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
+
+          ' Copies the Internal Data Source Column
+          Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
+        End With
 
       End If
 
@@ -976,49 +958,42 @@ UserNameErr:
         Sheets(Code_Sheet).Select
         Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
 
-        ' Copies the Registry Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & Next_Blank_Row)
+        With Sheets(Val_Wk_Array(1))
 
-        ' Copies the Measure Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & Next_Blank_Row)
+          ' Copies the Registry Column
+          Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & Next_Blank_Row)
 
-        ' Copies the Concept Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & Next_Blank_Row)
+          ' Copies the Measure Column
+          Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & Next_Blank_Row)
 
-        ' Copies the Source Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
+          ' Copies the Concept Column
+          Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & Next_Blank_Row)
 
-        ' Copies the Code System ID Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & Next_Blank_Row)
+          ' Copies the Source Column
+          Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
 
-        ' Copies the Raw Code Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
+          ' Copies the Code System ID Column
+          Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & Next_Blank_Row)
 
-        ' Copies the Raw Code Display Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
+          ' Copies the Raw Code Column
+          Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
 
-        ' Copies the Count Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(7) & "2:" & Unmapped_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & Next_Blank_Row)
+          ' Copies the Raw Code Display Column
+          Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
 
-        ' Copies the Notes Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(8) & "2:" & Unmapped_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & Next_Blank_Row)
+          ' Copies the Count Column
+          Range(Unmapped_Col_Ltr_Array(7) & "2:" & Unmapped_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & Next_Blank_Row)
 
-        ' Copies the Team Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & Next_Blank_Row)
+          ' Copies the Notes Column
+          Range(Unmapped_Col_Ltr_Array(8) & "2:" & Unmapped_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & Next_Blank_Row)
 
-        ' Copies the Internal Data Source Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+          ' Copies the Team Column
+          Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & Next_Blank_Row)
+
+          ' Copies the Internal Data Source Column
+          Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+
+        End With
 
       End If
 
@@ -1050,33 +1025,30 @@ UserNameErr:
         Sheets(Code_Sheet).Select
         Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
 
-        ' Copies the Source Column to Source
-        Sheets(Val_Wk_Array(2)).Select
-        Range(Health_Maint_Ltr_Array(10) & "2:" & Health_Maint_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
+        With Sheets(Val_Wk_Array(2))
 
-        ' Copies Expect_Meaning Column to Name
-        Sheets(Val_Wk_Array(2)).Select
-        Range(Health_Maint_Ltr_Array(1) & "2:" & Health_Maint_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & Next_Blank_Row)
+          ' Copies the Source Column to Source
+          Range(Health_Maint_Ltr_Array(10) & "2:" & Health_Maint_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
 
-        ' Copies Satisfier_Meaning Column to Section
-        Sheets(Val_Wk_Array(2)).Select
-        Range(Health_Maint_Ltr_Array(6) & "2:" & Health_Maint_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & Next_Blank_Row)
+          ' Copies Expect_Meaning Column to Name
+          Range(Health_Maint_Ltr_Array(1) & "2:" & Health_Maint_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & Next_Blank_Row)
 
-        ' Copies Entry_Type Column to ControlType
-        Sheets(Val_Wk_Array(2)).Select
-        Range(Health_Maint_Ltr_Array(2) & "2:" & Health_Maint_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & Next_Blank_Row)
+          ' Copies Satisfier_Meaning Column to Section
+          Range(Health_Maint_Ltr_Array(6) & "2:" & Health_Maint_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & Next_Blank_Row)
 
-        ' Copies Event_CD Column to EventCode
-        Sheets(Val_Wk_Array(2)).Select
-        Range(Health_Maint_Ltr_Array(8) & "2:" & Health_Maint_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
+          ' Copies Entry_Type Column to ControlType
+          Range(Health_Maint_Ltr_Array(2) & "2:" & Health_Maint_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & Next_Blank_Row)
 
-        ' Copies Event_CD_DISP Column to EventDisplay
-        Sheets(Val_Wk_Array(2)).Select
-        Range(Health_Maint_Ltr_Array(9) & "2:" & Health_Maint_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
+          ' Copies Event_CD Column to EventCode
+          Range(Health_Maint_Ltr_Array(8) & "2:" & Health_Maint_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
 
-        ' Copies the Internal Data Source Column
-        Sheets(Val_Wk_Array(2)).Select
-        Range(Health_Maint_Ltr_Array(11) & "2:" & Health_Maint_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+          ' Copies Event_CD_DISP Column to EventDisplay
+          Range(Health_Maint_Ltr_Array(9) & "2:" & Health_Maint_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
+
+          ' Copies the Internal Data Source Column
+          Range(Health_Maint_Ltr_Array(11) & "2:" & Health_Maint_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+
+        End With
 
       End If
 
@@ -1150,49 +1122,42 @@ UserNameErr:
         Sheets(Code_Sheet).Select
         Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
 
-        ' Copies the Registry Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(0) & Next_Blank_Row)
 
-        ' Copies the Measure Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(1) & Next_Blank_Row)
+        With Sheets(Val_Wk_Array(1))
 
-        ' Copies the Concept Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(2) & Next_Blank_Row)
+          ' Copies the Registry Column
+          Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(0) & Next_Blank_Row)
 
-        ' Copies the Source Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(3) & Next_Blank_Row)
+          ' Copies the Measure Column
+          Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(1) & Next_Blank_Row)
 
-        ' Copies the Code System ID Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(4) & Next_Blank_Row)
+          ' Copies the Concept Column
+          Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(2) & Next_Blank_Row)
 
-        ' Copies the Raw Code Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(8) & Next_Blank_Row)
+          ' Copies the Source Column
+          Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(3) & Next_Blank_Row)
 
-        ' Copies the Raw Code Display Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(9) & Next_Blank_Row)
+          ' Copies the Code System ID Column
+          Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(4) & Next_Blank_Row)
 
-        ' Copies the Count Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(7) & "2:" & Unmapped_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(10) & Next_Blank_Row)
+          ' Copies the Raw Code Column
+          Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(8) & Next_Blank_Row)
 
-        ' Copies the Notes Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(8) & "2:" & Unmapped_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(16) & Next_Blank_Row)
+          ' Copies the Raw Code Display Column
+          Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(9) & Next_Blank_Row)
 
-        ' Copies the Team Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(15) & Next_Blank_Row)
+          ' Copies the Count Column
+          Range(Unmapped_Col_Ltr_Array(7) & "2:" & Unmapped_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(10) & Next_Blank_Row)
 
-        ' Copies the Internal Data Source Column
-        Sheets(Val_Wk_Array(1)).Select
-        Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(19) & Next_Blank_Row)
+          ' Copies the Notes Column
+          Range(Unmapped_Col_Ltr_Array(8) & "2:" & Unmapped_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(16) & Next_Blank_Row)
+
+          ' Copies the Team Column
+          Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(15) & Next_Blank_Row)
+
+          ' Copies the Internal Data Source Column
+          Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(19) & Next_Blank_Row)
+        End With
 
       End If
 
