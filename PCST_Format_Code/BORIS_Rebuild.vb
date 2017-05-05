@@ -91,32 +91,32 @@ Sub BORIS_PCST()
   ' DEBUG
 
   ' Error Handling
-  ' On Error GoTo ErrHandler
+  On Error GoTo ErrHandler
 
   ' Arrays used for sheet creation.
 
   Val_Wk_Array = Array("Clinical Documentation", "Unmapped Codes", "Health Maintenance Summary")
   Val_Tbl_Name_Array = Array("Clinical_Table", "Unmapped_Table", "Health_Maint_Table")
 
-  CS_72_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
-  CS_72_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
-  CS_72_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
+  CS_72_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Review Source")
+  CS_72_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Review Source")
+  CS_72_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssay", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Review Source")
 
-  Gen_Sht_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
-  Gen_Sht_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
-  Gen_Sht_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Data Source")
+  Gen_Sht_Header_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Review Source")
+  Gen_Sht_Header_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Review Source")
+  Gen_Sht_Header_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "Code", "Display", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "vlookup", "Team", "Comments", "Standard Code", "Standard Coding System", "Internal Review Source")
 
-  Clin_Doc_Col_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Data Source")
-  Clin_Doc_Col_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Data Source")
-  Clin_Doc_Col_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Data Source")
+  Clin_Doc_Col_Num_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Review Source")
+  Clin_Doc_Col_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Review Source")
+  Clin_Doc_Col_Name_Array = Array("Registry", "Measure", "Concept", "Source", "DocumentType", "Name", "Section", "DTA", "EventCode", "EventDisplay", "ESH", "ControlType", "NomenclatureID", "Nomenclature", "TaskAssayCD", "Nomenclature Notes", "Social History Notes", "Grid Notes", "Freetext Notes", "Team", "Internal Review Source")
 
-  Unmapped_Col_Num_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Data Source")
-  Unmapped_Col_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Data Source")
-  Unmapped_Col_Name_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Data Source")
+  Unmapped_Col_Num_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Review Source")
+  Unmapped_Col_Ltr_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Review Source")
+  Unmapped_Col_Name_Array = Array("Registry", "Measure", "Concept", "Source", "Code System", "Raw Code", "Raw Display", "Count", "Notes", "Team", "Code Short Name", "Internal Review Source")
 
-  Health_Maint_Num_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Data Source")
-  Health_Maint_Ltr_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Data Source")
-  Health_Maint_Name_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Data Source")
+  Health_Maint_Num_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Review Source")
+  Health_Maint_Ltr_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Review Source")
+  Health_Maint_Name_Array = Array("EXPECT_NAME", "EXPECT_MEANING", "ENTRY_TYPE", "EXPECT_SAT_ID", "EXPECT_SAT_NAME", "EXPECT_ID", "SATISFIER_MEANING", "PARENT_VALUE", "EVENT_CD", "EVENT_CD_DISP", "SOURCE", "Internal Review Source")
 
   'Prompts user to confirm they have reviewed the data in the validation form BEFORE running this.
   Confirm_Scrubbed = MsgBox("*NOTICE* It is highly advised that you review the data on the Unmapped Codes, Clinical Documentation, and the Health Maintenance Summary Sheet before running this program." & vbNewLine & vbNewLine & "You should delete unneeded lines and review concept endings to confirm the data is correct before proceeding. Otherwise errors will be multiplied accross all newly created files." & vbNewLine & vbNewLine & "Once you click OK BORIS will start. Follow on screen prompts otherwise leave your computer alone until BORIS is done.", vbOKCancel + vbQuestion, "BORIS!")
@@ -172,7 +172,7 @@ Retry_UserID:
 
   ' If the folder already exists then do nothing. Else make it.
   If Len(Dir(Save_Path, vbDirectory)) = 0 Then
-    ' On Error GoTo UserNameErr:
+    On Error GoTo UserNameErr:
     MkDir Save_Path    'Creates the folder
   Else
     Folder_Check = MsgBox("Looks like the folder already exists... Do you want to continue?", vbOKCancel + vbQuestion, "BORIS!")    'Folder already exists so continuing on.
@@ -216,7 +216,7 @@ UserNameErr:
 
 
   ' Switches Error handling back to normal
-  ' On Error GoTo ErrHandler
+  On Error GoTo ErrHandler
 
   For i = 0 To UBound(Val_Wk_Array)
 
@@ -258,7 +258,6 @@ UserNameErr:
       Range(Selection, Selection.End(xlToRight)).Select
 
     End If
-
 
     'Converts range to table.
     Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
@@ -920,7 +919,7 @@ UserNameErr:
           ' Copies the Team Column
           Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
 
-          ' Copies the Internal Data Source Column
+          ' Copies the Internal Review Source Column
           Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
         End With
 
@@ -990,7 +989,7 @@ UserNameErr:
           ' Copies the Team Column
           Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & Next_Blank_Row)
 
-          ' Copies the Internal Data Source Column
+          ' Copies the Internal Review Source Column
           Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
 
         End With
@@ -1045,7 +1044,7 @@ UserNameErr:
           ' Copies Event_CD_DISP Column to EventDisplay
           Range(Health_Maint_Ltr_Array(9) & "2:" & Health_Maint_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
 
-          ' Copies the Internal Data Source Column
+          ' Copies the Internal Review Source Column
           Range(Health_Maint_Ltr_Array(11) & "2:" & Health_Maint_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
 
         End With
@@ -1155,7 +1154,7 @@ UserNameErr:
           ' Copies the Team Column
           Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(15) & Next_Blank_Row)
 
-          ' Copies the Internal Data Source Column
+          ' Copies the Internal Review Source Column
           Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(19) & Next_Blank_Row)
         End With
 
