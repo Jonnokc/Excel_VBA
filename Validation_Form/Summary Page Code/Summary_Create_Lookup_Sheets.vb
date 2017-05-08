@@ -150,7 +150,6 @@ ClearError:
                 .Position = 1
             End With
 
-
             With ActiveSheet.PivotTables(CurrentPivotName).PivotFields("Measure")
                 .Orientation = xlRowField
                 .Position = 2

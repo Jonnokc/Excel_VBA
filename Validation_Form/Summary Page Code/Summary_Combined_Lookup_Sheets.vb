@@ -59,7 +59,6 @@ Private Sub Summary_Combined_Lookup_Sheet()
     Range("A1:G1").Select
     Selection.Name = "Header_Range"
 
-
     counter = 0
     'Populates the header row
     For Each cell In Range("Header_Range")
@@ -69,13 +68,12 @@ Private Sub Summary_Combined_Lookup_Sheet()
     Next cell
 
 
-
     For i = 0 To UBound(WkNames)
 
         CurrentWk = WkNames(i)
 
         Sheets(CurrentWk).Select
-        Range("B3:C3").Select
+        Range("A3:B3").Select
         Range(Selection, Selection.End(xlDown)).Select
         Selection.Copy
 
