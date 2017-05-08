@@ -2,11 +2,12 @@ Sub Copy_Marked_Rows()
 
 ' Macro removes filters and then copies all rows which are flagged as "Yes" from the Raw_Concept_To_Measure sheet onto the additional tabs for proper distribution.
 
+Dim sht As Worksheet
     answer = MsgBox("You are about to copy the flagged rows and populate the Workbook. Are you ready?", vbYesNo + vbQuestion, "Empty Sheet")
 
     If answer = vbYes Then
 
-        Application.ScreenUpdating = False
+        'Application.ScreenUpdating = False
 
         Sheets("Pivot").Select
         ActiveSheet.Outline.ShowLevels RowLevels:=2
@@ -20,29 +21,27 @@ Sub Copy_Marked_Rows()
 
         'Copies the selected cells
         Range(Selection, Selection.End(xlDown)).Select
-        Selection.Copy
+        Selection.Copy Sheets("Clinical Documentation").Range("A3")
+        Selection.Copy Sheets("Unmapped Codes").Range("A3")
+        Selection.Copy Sheets("Potential Mapping Issues").Range("A3")
 
         'Pastes the selected cells on the clinical Documentation Tab
-        Sheets("Clinical Documentation").Select
-        Range("A3").Select
-        ActiveSheet.Paste
-        Rows("3:3").Select
-        Selection.Delete Shift:=xlUp
+        Set sht = Worksheets("Clinical Documentation")
+        With sht
+          sht.Range("3:3").Delete Shift:=xlUp
+        End With
 
         'Pastes cells on Unmapped Codes tab
-        Sheets("Unmapped Codes").Select
-        Range("A3").Select
-        ActiveSheet.Paste
-        Rows("3:3").Select
-        Selection.Delete Shift:=xlUp
+        Set sht = Worksheets("Unmapped Codes")
+        With sht
+          sht.Range("3:3").Delete Shift:=xlUp
+        End With
 
         'Pastes cells on Potential Mapping issues tab
-        Sheets("Potential Mapping Issues").Select
-        Range("A3").Select
-        ActiveSheet.Paste
-        Rows("3:3").Select
-        Application.CutCopyMode = False
-        Selection.Delete Shift:=xlUp
+        Set sht = Worksheets("Potential Mapping Issues")
+        With sht
+          sht.Range("3:3").Delete Shift:=xlUp
+        End With
 
 
     Else
