@@ -12,9 +12,6 @@ Sub Name_Current_Selection_As_Range()
     Set sht = Worksheets("Clinical Documentation")
     Set StartCell = Range("A2")
 
-    'Refresh UsedRange
-    Worksheets("Clinical Documentation").UsedRange
-
     'Find Last Row and Column
     lastrow = StartCell.SpecialCells(xlCellTypeLastCell).Row
     LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column

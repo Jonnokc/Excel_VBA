@@ -716,10 +716,6 @@ UserNameErr:
   Next Code_Short
 
 
-  ' PRIMARY - Remove Duplicates Clinical Documentation, Filter For duplicates, Then Combines the sheets into one
-  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-
   ' filters by concept -> registry for easy reviewing in final product
   With ActiveWorkbook.Sheets(Val_Wk_Array(0)).ListObjects(1).Sort
     .SortFields.Add Key:=Range(Val_Tbl_Name_Array(0) & "[Concept]"), SortOn:= _
@@ -1053,14 +1049,22 @@ UserNameErr:
 
       ' SUB - Removes duplicates from the CS 72 sheet
       ''''''''''''''''''''''''''''''''''''''''''''''''
-      ' Dynamically determines size of array
-      ArraySize = UBound(CS_72_Header_Ltr_Array)
 
-      ' Removes duplicates by source, EVcode, EventDisplay
-      Sheets(Code_Sheet).Range("$A$1:" & CS_72_Header_Ltr_Array(ArraySize) & LR).RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
-      CS_72_Header_Num_Array(8), CS_72_Header_Num_Array(9)), _
-      Header:=xlYes
+      Set sht = Worksheets(Code_Sheet)
 
+      With sht
+        Set StartCell = .Range("A1")
+        'Find Last Row and Column
+        lastrow = StartCell.SpecialCells(xlCellTypeLastCell).Row
+        LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
+
+        'Select Range
+        sht.Range(StartCell, sht.Cells(lastrow, LastColumn)).name = "Range_72"
+
+        Sheets(Code_Sheet).Range("Range_72").RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
+        CS_72_Header_Num_Array(8), CS_72_Header_Num_Array(9)), _
+        Header:=xlYes
+      End With
 
       '       SUB - Populates headers for all other sheets
       '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
