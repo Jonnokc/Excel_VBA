@@ -831,221 +831,218 @@ UserNameErr:
       ' SUB - Copies Clinical Documentation to 72
       ''''''''''''''''''''''''''''''''''''''''''''
 
-      ' Filters The Source column for current source
-      Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
-      Criteria1:=Source_Name, Operator:=xlAnd
+      With Sheets(Val_Wk_Array(0))
+
+        ' Filters The Source column for current source
+        Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
+        Criteria1:=Source_Name, Operator:=xlAnd
 
 
-      'Checks current table to determine if any cells are visible to copy
-      Sheets(Val_Wk_Array(0)).Select
-      Set tbl = Sheets(Val_Wk_Array(0)).ListObjects(1)
+        'Checks current table to determine if any cells are visible to copy
+        ' Sheets(Val_Wk_Array(0)).Select
+        Set tbl = Sheets(Val_Wk_Array(0)).ListObjects(1)
 
-      If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-        Table_ObjIsVisible = True
-      Else
-        Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
-      End If
+        If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+          Table_ObjIsVisible = True
+        Else
+          Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
+        End If
 
-      'If data is visible, and this is CS 72 then copy visible data
-      If Table_ObjIsVisible = True Then
+        'If data is visible, and this is CS 72 then copy visible data
+        If Table_ObjIsVisible = True Then
 
-        ' Finds the last row of the Clinical Documentation Sheet for copy Range
-        Sheets(Val_Wk_Array(0)).Select
-        LR = Range("A" & Rows.Count).End(xlUp).Row
+          ' Finds the last row of the Clinical Documentation Sheet for copy Range
+          Sheets(Val_Wk_Array(0)).Select
 
-        With Sheets(Val_Wk_Array(0))
-          ' Copies Registry Column
-          Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
+          LR = Range("A" & Rows.Count).End(xlUp).Row
 
-          ' Copies Measure Column
-          Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
+            ' Copies Registry Column
+            Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
 
-          ' Copies Concept Column
-          Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
+            ' Copies Measure Column
+            Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
 
-          ' Copies Source Column
-          Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
+            ' Copies Concept Column
+            Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
 
-          ' Copies DocumentType Column
-          Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
+            ' Copies Source Column
+            Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
 
-          ' Copies Name Column
-          Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
+            ' Copies DocumentType Column
+            Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
 
-          ' Copies Section Column
-          Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
+            ' Copies Name Column
+            Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
 
-          ' Copies DTA Column
-          Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
+            ' Copies Section Column
+            Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
 
-          ' Copies EventCode Column
-          Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
+            ' Copies DTA Column
+            Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
 
-          ' Copies EventDisplay Column
-          Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
+            ' Copies EventCode Column
+            Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
 
-          ' Copies ESH Column
-          Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
+            ' Copies EventDisplay Column
+            Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
 
-          ' Copies ControlType Column
+            ' Copies ESH Column
+            Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
 
-          Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
+            ' Copies ControlType Column
+            Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
 
-          ' ' Copies NomenclatureID Column
-          ' Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
-          '
-          ' ' Copies Nomenclature Display Column
-          ' Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
-          '
-          ' ' Copies TaskAssay Column
-          ' Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
-          '
-          ' ' Copies the Nomenclature Notes Column
-          ' Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
+            ' ' Copies NomenclatureID Column
+            ' Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
+            '
+            ' ' Copies Nomenclature Display Column
+            ' Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
+            '
+            ' ' Copies TaskAssay Column
+            ' Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
+            '
+            ' ' Copies the Nomenclature Notes Column
+            ' Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
 
-          ' Copies the Social History Notes Column
-          Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
+            ' Copies the Social History Notes Column
+            Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
 
-          ' Copies the Grid Notes Column
-          Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
+            ' Copies the Grid Notes Column
+            Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
 
-          ' Copies the Freetext Notes Column
-          Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
+            ' Copies the Freetext Notes Column
+            Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
 
-          ' Copies the Team Column
-          Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
+            ' Copies the Team Column
+            Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
 
-          ' Copies the Internal Review Source Column
-          Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
-        End With
+            ' Copies the Internal Review Source Column
+            Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
+          End If
+      End With
 
-      End If
 
 
       '    SUB - Copies unmapped codes to 72 sheet
       '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-      Sheets(Val_Wk_Array(1)).Select
 
-      ' Applies filters for only this source and code being currently reviewed.
-      Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(3), _
-      Criteria1:=Source_Name, Operator:=xlAnd
+      With Sheets(Val_Wk_Array(1))
 
-      ' Filters The Code Short Name Column for current code in loop
-      Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(10), _
-      Criteria1:=code, Operator:=xlAnd
+        ' Applies filters for only this source and code being currently reviewed.
+        Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(3), _
+        Criteria1:=Source_Name, Operator:=xlAnd
 
-      Set tbl = Sheets(Val_Wk_Array(1)).ListObjects(1)
+        ' Filters The Code Short Name Column for current code in loop
+        Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(10), _
+        Criteria1:=code, Operator:=xlAnd
 
-      If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-        Table_ObjIsVisible = True
-      Else
-        Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
-      End If
+        Set tbl = Sheets(Val_Wk_Array(1)).ListObjects(1)
 
-      ' If data is visible then copy data
-      If Table_ObjIsVisible = True Then
+        If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+          Table_ObjIsVisible = True
+        Else
+          Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
+        End If
 
-        ' Finds the last row of the data sheet for copying
-        Sheets(Val_Wk_Array(1)).Select
-        LR = Range("A" & Rows.Count).End(xlUp).Row
+        ' If data is visible then copy data
+        If Table_ObjIsVisible = True Then
 
-        ' Finds the next blank row on the code sheet
-        Sheets(Code_Sheet).Select
-        Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
+          ' Finds the last row of the data sheet for copying
+          Sheets(Val_Wk_Array(1)).Select
+          LR = Range("A" & Rows.Count).End(xlUp).Row
 
-        With Sheets(Val_Wk_Array(1))
+          ' Finds the next blank row on the code sheet
+          Sheets(Code_Sheet).Select
+          Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
 
-          ' Copies the Registry Column
-          Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & Next_Blank_Row)
+          Sheets(Val_Wk_Array(1)).Select
 
-          ' Copies the Measure Column
-          Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & Next_Blank_Row)
+            ' Copies the Registry Column
+            Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & Next_Blank_Row)
 
-          ' Copies the Concept Column
-          Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & Next_Blank_Row)
+            ' Copies the Measure Column
+            Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & Next_Blank_Row)
 
-          ' Copies the Source Column
-          Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
+            ' Copies the Concept Column
+            Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & Next_Blank_Row)
 
-          ' Copies the Code System ID Column
-          Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & Next_Blank_Row)
+            ' Copies the Source Column
+            Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
 
-          ' Copies the Raw Code Column
-          Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
+            ' Copies the Code System ID Column
+            Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & Next_Blank_Row)
 
-          ' Copies the Raw Code Display Column
-          Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
+            ' Copies the Raw Code Column
+            Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
 
-          ' Copies the Count Column
-          Range(Unmapped_Col_Ltr_Array(7) & "2:" & Unmapped_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & Next_Blank_Row)
+            ' Copies the Raw Code Display Column
+            Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
 
-          ' Copies the Notes Column
-          Range(Unmapped_Col_Ltr_Array(8) & "2:" & Unmapped_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & Next_Blank_Row)
+            ' Copies the Team Column
+            Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & Next_Blank_Row)
 
-          ' Copies the Team Column
-          Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & Next_Blank_Row)
-
-          ' Copies the Internal Review Source Column
-          Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+            ' Copies the Internal Review Source Column
+            Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+          End If
 
         End With
 
-      End If
+
 
 
       '       SUB - Populates Health Maintenance visible data to CS 72
       '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-      Sheets(Val_Wk_Array(2)).Select
-
-      Sheets(Val_Wk_Array(2)).ListObjects("Health_Maint_Table").Range.AutoFilter Field:=Health_Maint_Num_Array(10), _
-      Criteria1:=Source_Name, Operator:=xlAnd
-
-      Set tbl = Sheets(Val_Wk_Array(2)).ListObjects(1)
-
-      If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-        Table_ObjIsVisible = True
-      Else
-        Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
-      End If
-
-      ' If data is visible then copy visible data
-      If Table_ObjIsVisible = True Then
-
-        ' Finds the last row of the data sheet for copying
-        Sheets(Val_Wk_Array(2)).Select
-        LR = Range("A" & Rows.Count).End(xlUp).Row
-
-        ' Sets next blank row
-        Sheets(Code_Sheet).Select
-        Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
-
-        With Sheets(Val_Wk_Array(2))
-
-          ' Copies the Source Column to Source
-          Range(Health_Maint_Ltr_Array(10) & "2:" & Health_Maint_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
-
-          ' Copies Expect_Meaning Column to Name
-          Range(Health_Maint_Ltr_Array(1) & "2:" & Health_Maint_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & Next_Blank_Row)
-
-          ' Copies Satisfier_Meaning Column to Section
-          Range(Health_Maint_Ltr_Array(6) & "2:" & Health_Maint_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & Next_Blank_Row)
-
-          ' Copies Entry_Type Column to ControlType
-          Range(Health_Maint_Ltr_Array(2) & "2:" & Health_Maint_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & Next_Blank_Row)
-
-          ' Copies Event_CD Column to EventCode
-          Range(Health_Maint_Ltr_Array(8) & "2:" & Health_Maint_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
-
-          ' Copies Event_CD_DISP Column to EventDisplay
-          Range(Health_Maint_Ltr_Array(9) & "2:" & Health_Maint_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
-
-          ' Copies the Internal Review Source Column
-          Range(Health_Maint_Ltr_Array(11) & "2:" & Health_Maint_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
-
-        End With
-
-      End If
+      ' Sheets(Val_Wk_Array(2)).Select
+      '
+      ' Sheets(Val_Wk_Array(2)).ListObjects("Health_Maint_Table").Range.AutoFilter Field:=Health_Maint_Num_Array(10), _
+      ' Criteria1:=Source_Name, Operator:=xlAnd
+      '
+      ' Set tbl = Sheets(Val_Wk_Array(2)).ListObjects(1)
+      '
+      ' If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+      '   Table_ObjIsVisible = True
+      ' Else
+      '   Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
+      ' End If
+      '
+      ' ' If data is visible then copy visible data
+      ' If Table_ObjIsVisible = True Then
+      '
+      '   ' Finds the last row of the data sheet for copying
+      '   Sheets(Val_Wk_Array(2)).Select
+      '   LR = Range("A" & Rows.Count).End(xlUp).Row
+      '
+      '   ' Sets next blank row
+      '   Sheets(Code_Sheet).Select
+      '   Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
+      '
+      '   With Sheets(Val_Wk_Array(2))
+      '
+      '     ' Copies the Source Column to Source
+      '     Range(Health_Maint_Ltr_Array(10) & "2:" & Health_Maint_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
+      '
+      '     ' Copies Expect_Meaning Column to Name
+      '     Range(Health_Maint_Ltr_Array(1) & "2:" & Health_Maint_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & Next_Blank_Row)
+      '
+      '     ' Copies Satisfier_Meaning Column to Section
+      '     Range(Health_Maint_Ltr_Array(6) & "2:" & Health_Maint_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & Next_Blank_Row)
+      '
+      '     ' Copies Entry_Type Column to ControlType
+      '     Range(Health_Maint_Ltr_Array(2) & "2:" & Health_Maint_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & Next_Blank_Row)
+      '
+      '     ' Copies Event_CD Column to EventCode
+      '     Range(Health_Maint_Ltr_Array(8) & "2:" & Health_Maint_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
+      '
+      '     ' Copies Event_CD_DISP Column to EventDisplay
+      '     Range(Health_Maint_Ltr_Array(9) & "2:" & Health_Maint_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
+      '
+      '     ' Copies the Internal Review Source Column
+      '     Range(Health_Maint_Ltr_Array(11) & "2:" & Health_Maint_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+      '
+      '   End With
+      '
+      ' End If
 
       ' SUB - Removes duplicates from the CS 72 sheet
       ''''''''''''''''''''''''''''''''''''''''''''''''
