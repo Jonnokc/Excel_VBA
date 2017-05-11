@@ -3,6 +3,9 @@ Sub Copy_Marked_Rows()
 ' Macro removes filters and then copies all rows which are flagged as "Yes" from the Raw_Concept_To_Measure sheet onto the additional tabs for proper distribution.
 
 Dim sht As Worksheet
+
+Application.ScreenUpdating = False
+
     answer = MsgBox("You are about to copy the flagged rows and populate the Workbook. Are you ready?", vbYesNo + vbQuestion, "Empty Sheet")
 
     If answer = vbYes Then
@@ -50,6 +53,7 @@ Dim sht As Worksheet
 
     End If
 
+    Sheets("Unmapped Codes").Select
     Application.ScreenUpdating = True
 
 End Sub
