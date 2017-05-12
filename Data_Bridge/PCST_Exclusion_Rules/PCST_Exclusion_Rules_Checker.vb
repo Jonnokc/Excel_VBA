@@ -8,6 +8,8 @@ Sub ExclusionTesting()
     Dim LastColumn As Long
     Dim StartCell As Range
 
+
+    Sheet1.Select
     SheetName = InputBox("What is the name of the sheet with all the Unmapped codes?")
     RawCodeColumn = InputBox("What is the column letter for the 'Raw Code Display' Column?")
 
@@ -32,29 +34,42 @@ Sub ExclusionTesting()
         lastrow = StartCell.SpecialCells(xlCellTypeLastCell).Row
         ' Names range for loop
         sht.Range(StartCell, sht.Cells(lastrow, RawCodeColumn)).Name = "Codes"
+    End With
 
-        ' Names Exclusion Check Results Range
-        NextBlank = Mid(Cells(2, Columns.Count).End(xlToLeft).Offset(0, 1).Address, 2, 1)
-        Range(NextBlank & "1") = "Exclusion Check Results"
+    ' Sets the Results column
+    With sht
+      ' Checks if header already exists
+      Range("A1", Selection.End(xlToRight)).Name = "Header_row"
 
-        sht.Range(NextBlank & "2", sht.Cells(lastrow, NextBlank)).Name = "Results"
+      For Each Header In Range("Header_row")
+        If InStr(1, Header, "Exclusion Check Results") > 0 Then
+          header_location = Mid(Header.Address, 2, 1)
+          Columns(header_location & ":" & header_location).Select
+          Selection.Delete Shift:=xlToLeft
+        End If
+      Next Header
 
 
+      ' Names Exclusion Check Results Range
+      NextBlank = Mid(Cells(2, Columns.Count).End(xlToLeft).Offset(0, 1).Address, 2, 1)
+      Range(NextBlank & "1") = "Exclusion Check Results"
+
+      sht.Range(NextBlank & "2", sht.Cells(lastrow, NextBlank)).Name = "Results"
     End With
 
 
     ExRules = Range("Exclusion_Rules").Value
     RawCodes = Range("Codes").Value
-    ExclusionResults = Range("I2:I4000")
+    ExclusionResults = Range("Results")
 
-    For Rule = 1 to UBound(ExRules)
-      For Code = 1 to UBound(RawCodes)
-        CurrentRule = ExRules(Rule,2)
-        CurrentRuleNumber = ExRules(Rule,1)
-        CurrentCode = RawCodes(Code,1)
+    For Rule = 1 To UBound(ExRules)
+      For Code = 1 To UBound(RawCodes)
+        CurrentRule = ExRules(Rule, 2)
+        CurrentRuleNumber = ExRules(Rule, 1)
+        CurrentCode = RawCodes(Code, 1)
 
         If InStr(1, CurrentCode, CurrentRule) > 0 Then
-          ExclusionResults(Code,1) = "Breaks Rule " & CurrentRuleNumber & " " & CurrentRule
+          ExclusionResults(Code, 1) = "Breaks Rule " & CurrentRuleNumber & " " & CurrentRule
           Exit For
         End If
       Next Code
@@ -62,16 +77,6 @@ Sub ExclusionTesting()
 
   Range("Results") = ExclusionResults
 
-    '
-    ' For Each Rule In Range("Exclusion_Rules")
-    '   For Each Code In Range("Codes")
-    '     CurrentRule = Rule
-    '     CurrentCode = Code
-    '       If InStr(1, CurrentCode, CurrentRule) > 0 Then
-    '         Code.Offset(0, 5).Value = "Breaks Rule - " & CurrentRule
-    '       End If
-    '   Next Code
-    ' Next Rule
 
 
 End Sub
