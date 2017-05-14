@@ -8,7 +8,7 @@ Sub ExclusionTesting()
     Dim LastColumn As Long
     Dim StartCell As Range
 
-
+    ' Selects the first sheet in the workbook.
     Sheet1.Select
     SheetName = InputBox("What is the name of the sheet with all the Unmapped codes?")
     RawCodeColumn = InputBox("What is the column letter for the 'Raw Code Display' Column?")
@@ -25,14 +25,13 @@ Sub ExclusionTesting()
       sht.Range(StartCell, sht.Cells(lastrow, "B")).Name = "Exclusion_Rules"
     End With
 
-
     ' Names the Raw Code Column for looping
     Set sht = Sheets(SheetName)
 
+    ' Names range for loop
     With sht
         Set StartCell = .Range(RawCodeColumn & "2")
         lastrow = StartCell.SpecialCells(xlCellTypeLastCell).Row
-        ' Names range for loop
         sht.Range(StartCell, sht.Cells(lastrow, RawCodeColumn)).Name = "Codes"
     End With
 
@@ -49,19 +48,20 @@ Sub ExclusionTesting()
         End If
       Next Header
 
-
       ' Names Exclusion Check Results Range
       NextBlank = Mid(Cells(2, Columns.Count).End(xlToLeft).Offset(0, 1).Address, 2, 1)
       Range(NextBlank & "1") = "Exclusion Check Results"
 
+      ' Names the results range.
       sht.Range(NextBlank & "2", sht.Cells(lastrow, NextBlank)).Name = "Results"
     End With
 
-
+    ' Saves range to memory
     ExRules = Range("Exclusion_Rules").Value
     RawCodes = Range("Codes").Value
     ExclusionResults = Range("Results")
 
+    ' Loops through cells for each row to find if it hits any rules
     For Rule = 1 To UBound(ExRules)
       For Code = 1 To UBound(RawCodes)
         CurrentRule = ExRules(Rule, 2)
@@ -75,6 +75,7 @@ Sub ExclusionTesting()
       Next Code
     Next Rule
 
+  ' Writes the rules back to the excel range.
   Range("Results") = ExclusionResults
 
 
