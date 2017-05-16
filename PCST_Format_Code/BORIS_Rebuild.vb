@@ -1408,7 +1408,7 @@ UserNameErr:
 
     With sht.Range("A2:A" & LastRow)
       If WorksheetFunction.CountBlank(.Cells) > 0 Then
-          .SpecialCells(xlCellTypeBlanks).EntireRow.Delete
+        .SpecialCells(xlCellTypeBlanks).EntireRow.Delete
       End If
     End With
 
