@@ -1400,9 +1400,17 @@ UserNameErr:
     Set sht = Sheet
     Set StartCell = Range("A1")
 
-    LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
-    LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
-    Sheet_Name = Sheet.Name
+    With sht
+      LastRow = .Range("A" & .Rows.Count).End(xlUp).Row
+      LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
+      Sheet_Name = Sheet.Name
+    End With
+
+    With sht.Range("A2:A" & LastRow)
+      If WorksheetFunction.CountBlank(.Cells) > 0 Then
+          .SpecialCells(xlCellTypeBlanks).EntireRow.Delete
+      End If
+    End With
 
     sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
 
