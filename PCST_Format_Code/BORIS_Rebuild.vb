@@ -88,8 +88,6 @@ Sub BORIS_PCST()
   Application.EnableEvents = False
 
 
-  ' DEBUG
-
   ' Error Handling
   On Error GoTo ErrHandler
 
@@ -126,10 +124,8 @@ Sub BORIS_PCST()
     GoTo User_Exit
   End If
 
-
   ' Names variable current file name
   Validation_File_Name = ActiveWorkbook.Name
-
 
   ' Checks to confirm user entered correct project name. This is needed for file name.
   Project_Name_Checker = 0
@@ -214,12 +210,10 @@ UserNameErr:
     Next i
   Next Sheet
 
-
   ' Switches Error handling back to normal
   On Error GoTo ErrHandler
 
   For i = 0 To UBound(Val_Wk_Array)
-
 
     Sheets(Val_Wk_Array(i)).Select
 
@@ -328,7 +322,6 @@ UserNameErr:
           Exit For
         End If
       Next Header
-
       'Copies sources from the sheets to the sources list
       Range(ActiveSheet.Range(SourceCol & "2"), ActiveSheet.Range(SourceCol & "2").End(xlDown)).Copy Sheets("Sources List").Range("A" & Next_Blank_Row)
       Sheets("Sources List").Rows(Next_Blank_Row & ":" & Next_Blank_Row).Delete Shift:=xlUp
@@ -844,9 +837,7 @@ UserNameErr:
         Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
         Criteria1:=Source_Name, Operator:=xlAnd
 
-
         'Checks current table to determine if any cells are visible to copy
-        ' Sheets(Val_Wk_Array(0)).Select
         Set tbl = Sheets(Val_Wk_Array(0)).ListObjects(1)
 
         If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
@@ -926,6 +917,7 @@ UserNameErr:
           ' Copies the Internal Review Source Column
           Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
         End If
+
       End With
 
 
@@ -1425,10 +1417,10 @@ UserNameErr:
     End If
 
     Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
-    tbl.Name = Sheet_Name
-    tbl.TableStyle = "TableStyleLight9"
-    Columns.AutoFit
-    Range("A1").Select
+      tbl.Name = Sheet_Name
+      tbl.TableStyle = "TableStyleLight9"
+      Columns.AutoFit
+      Range("A1").Select
 
     ' Clears all data validation which could be copied
     Sheet.Cells.Validation.Delete
@@ -1512,10 +1504,6 @@ UserNameErr:
     End If
   Next Sheet
 
-
-
-
-
   '
   '  SUB - Aligns Index Sheet
   '''''''''''''''''''''''
@@ -1536,10 +1524,10 @@ UserNameErr:
   Workbooks(Source_Name & ".xlsx").Close SaveChanges:=True
   Windows(Validation_File_Name).Activate
 
-  ' Start over with next source from list
+' Start over with next source from list
 Next Source_Name
 
-
+' Exiting program after completion
 End_Program:
 
 'Re-enables previously disabled settings after all code has run.
@@ -1554,11 +1542,12 @@ ChDir "C:\"
 ' Activates primary excel file
 Windows(Validation_File_Name).Activate
 
-'Notifies user that the program has completed.
+' Notifies user that the program has completed.
 MsgBox ("Your PCST Files have been created. Folder is loctated within your My Documents.")
 
 Exit Sub
 
+' User chose to exit program
 User_Exit:
 
 ' If the active workbook is not the validation form then close it without saving
@@ -1582,7 +1571,7 @@ MsgBox ("Program quitting per user action.")
 
 Exit Sub
 
-
+' Something went wrong
 ErrHandler:
 
 If Source_Name <> vbNullString Then
