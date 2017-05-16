@@ -1494,7 +1494,7 @@ Application.EnableEvents = True
 
 ' Clears the filesystem descriptor allowing you to delete the folder
 Dir "C:\"
-ChDir "C:\"
+ChDir "C:\"C
 
 MsgBox ("Program quitting per user action.")
 
