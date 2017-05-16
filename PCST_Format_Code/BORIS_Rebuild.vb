@@ -1000,7 +1000,7 @@ UserNameErr:
       End With
 
 
-
+      ' Was removed since we are not submitting Health Maint Codes
 
       '       SUB - Populates Health Maintenance visible data to CS 72
       '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1073,7 +1073,9 @@ UserNameErr:
         Sheets(Code_Sheet).Range("Range_72").RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
         CS_72_Header_Num_Array(8), CS_72_Header_Num_Array(9)), _
         Header:=xlYes
+
       End With
+
 
       '       SUB - Populates headers for all other sheets
       '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1174,6 +1176,7 @@ UserNameErr:
 
           ' Copies the Internal Review Source Column
           Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(19) & Next_Blank_Row)
+
         End With
 
       End If
@@ -1432,6 +1435,86 @@ UserNameErr:
 
   Next Sheet
 
+  ' SUB - Highlights Important Columns on Nomenclature Sheet
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+  For Each Sheet In Worksheets
+    CurrentSheet = Sheet.Name
+
+    ' Highlights 72 and Nomenclature Columns
+    If CurrentSheet = "Nomenclature - Patient Care" Then
+      Sheets(CurrentSheet).Select
+      LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+      ' Selects DTA Column
+      Range(CS_72_Header_Ltr_Array(7) & "2:" & CS_72_Header_Ltr_Array(7) & LastRow).Interior.Color = 16764108
+      ' Colors the Nom Id Column
+      Range(CS_72_Header_Ltr_Array(12) & "2:" & CS_72_Header_Ltr_Array(12) & LastRow).Interior.Color = 16764108
+      ' Colors the Nom Display Column
+      Range(CS_72_Header_Ltr_Array(13) & "2:" & CS_72_Header_Ltr_Array(13) & LastRow).Interior.Color = 16764108
+
+    ElseIf CurrentSheet = "72" Then
+      Sheets(CurrentSheet).Select
+      LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+      ' Colors Event Code Column
+      Range(CS_72_Header_Ltr_Array(8) & "2:" & CS_72_Header_Ltr_Array(8) & LastRow).Interior.Color = 16764108
+      ' Colors Event Code Display Column
+      Range(CS_72_Header_Ltr_Array(9) & "2:" & CS_72_Header_Ltr_Array(9) & LastRow).Interior.Color = 16764108
+    End If
+
+  Next Sheet
+
+  ' SUB - Hides Extra Columns
+  '''''''''''''''''''''''''''''
+  For Each Sheet In Worksheets
+    CurrentSheet = Sheet.Name
+
+    If CurrentSheet = "Nomenclature - Patient Care" Then
+      Sheets(CurrentSheet).Select
+      ' Hides Concept Column
+      Columns(CS_72_Header_Ltr_Array(2)).EntireColumn.Hidden = True
+      ' Hides Source Column
+      Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
+      ' Hides Nomenclature Notes Column
+      Columns(CS_72_Header_Ltr_Array(15)).EntireColumn.Hidden = True
+      ' Hides Social History Notes Column
+      Columns(CS_72_Header_Ltr_Array(16)).EntireColumn.Hidden = True
+      ' Hides Grid Notes Column
+      Columns(CS_72_Header_Ltr_Array(17)).EntireColumn.Hidden = True
+      ' Hides Free Text Notes Column
+      Columns(CS_72_Header_Ltr_Array(18)).EntireColumn.Hidden = True
+      ' Hides Team Column
+      Columns(CS_72_Header_Ltr_Array(19)).EntireColumn.Hidden = True
+      ' Hides Internal Review Column
+      Columns(CS_72_Header_Ltr_Array(23)).EntireColumn.Hidden = True
+
+    ElseIf CurrentSheet = "72" Then
+      Sheets(CurrentSheet).Select
+      ' Hides Concept Column
+      Columns(CS_72_Header_Ltr_Array(2)).EntireColumn.Hidden = True
+      ' Hides Source Column
+      Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
+      ' Hides Nomenclature Notes Column
+      Columns(CS_72_Header_Ltr_Array(15)).EntireColumn.Hidden = True
+      ' Hides Social History Notes Column
+      Columns(CS_72_Header_Ltr_Array(16)).EntireColumn.Hidden = True
+      ' Hides Grid Notes Column
+      Columns(CS_72_Header_Ltr_Array(17)).EntireColumn.Hidden = True
+      ' Hides Free Text Notes Column
+      Columns(CS_72_Header_Ltr_Array(18)).EntireColumn.Hidden = True
+      ' Hides Team Column
+      Columns(CS_72_Header_Ltr_Array(19)).EntireColumn.Hidden = True
+      ' Hides Internal Review Column
+      Columns(CS_72_Header_Ltr_Array(23)).EntireColumn.Hidden = True
+      ' Hides NomenclatureID Column
+      Columns(CS_72_Header_Ltr_Array(12)).EntireColumn.Hidden = True
+      ' Hides Nomenclature Display Column
+      Columns(CS_72_Header_Ltr_Array(13)).EntireColumn.Hidden = True
+    End If
+  Next Sheet
+
+
+
+
 
   '
   '  SUB - Aligns Index Sheet
@@ -1493,7 +1576,7 @@ Application.EnableEvents = True
 
 ' Clears the filesystem descriptor allowing you to delete the folder
 Dir "C:\"
-ChDir "C:\"C
+ChDir "C:\"
 
 MsgBox ("Program quitting per user action.")
 
