@@ -1493,6 +1493,10 @@ UserNameErr:
       Columns(CS_72_Header_Ltr_Array(17)).EntireColumn.Hidden = True
       ' Hides Free Text Notes Column
       Columns(CS_72_Header_Ltr_Array(18)).EntireColumn.Hidden = True
+      ' Hides Control Type Column
+      Columns(CS_72_Header_Ltr_Array(11)).EntireColumn.Hidden = True
+      ' Hides Task Assay Column
+      Columns(CS_72_Header_Ltr_Array(14)).EntireColumn.Hidden = True
       ' Hides Team Column
       Columns(CS_72_Header_Ltr_Array(19)).EntireColumn.Hidden = True
       ' Hides Internal Review Column
