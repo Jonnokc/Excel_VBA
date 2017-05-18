@@ -186,7 +186,7 @@ UserNameErr:
     Resume Retry_UserID:
   End If
 
-  ClearFormattingCheck = MsgBox("Is it ok to clear all cell formatting or do you want to keep cell coloring?", vbYesNo + vbQuestion, "BORIS!")
+  ClearFormattingCheck = MsgBox("Do you want to keep cell color formatting?", vbYesNo + vbQuestion, "BORIS!")
   If ClearFormattingCheck = vbYes Then
     ClearFormatting = True
   Else
