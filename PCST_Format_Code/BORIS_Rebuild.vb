@@ -725,9 +725,9 @@ UserNameErr:
   ' SUB - Filters to exclude lines were the nomenclature is mapped
   Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(15), _
   Criteria1:= _
-  "<>*This nomenclature is mapped but the event code will need to be mapped if this will be used to complete the measure.*" _
+  "<>*This nomenclature is not mapped.*" _
   , Operator:=xlAnd, Criteria2:= _
-  "<>*This event code is mapped but the nomenclature is not mapped and should be if this will be used to complete the measure.*"
+  "<>*This event code is mapped but the associated nomenclature is not mapped.*"
 
   ' SUB - Creates the source code worksheet
   '''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1197,9 +1197,7 @@ UserNameErr:
 
   Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(15), _
   Criteria1:= _
-  "<>*This nomenclature is mapped but the event code will need to be mapped if this will be used to complete the measure.*" _
-  , Operator:=xlAnd, Criteria2:= _
-  "<>*This event code is mapped but the nomenclature is not mapped and should be if this will be used to complete the measure.*"
+  "<>*This nomenclature is mapped but the associated event code is not mapped.*"
 
 
   Set Table_Obj = ActiveSheet.ListObjects(1)

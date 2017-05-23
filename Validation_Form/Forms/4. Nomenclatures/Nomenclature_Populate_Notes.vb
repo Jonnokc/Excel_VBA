@@ -99,7 +99,7 @@ Private Sub Nomenclature_Notes()
                 And EventCode_Val_Check = "0" _
                 Then
 
-            DataRange(Irow, 12) = "This nomenclature and event code are not mapped and should be if this will be used to complete the measure."
+            DataRange(Irow, 12) = "This nomenclature and associated event code are not mapped."
             DataRange(Irow, 16) = "PCST"
 
 
@@ -108,7 +108,7 @@ Private Sub Nomenclature_Notes()
                 And EventCode_Val_Check = "0" _
                 Then
 
-            DataRange(Irow, 12) = "This nomenclature is mapped but the event code will need to be mapped if this will be used to complete the measure."
+            DataRange(Irow, 12) = "This nomenclature is mapped but the associated event code is not mapped."
             DataRange(Irow, 16) = "PCST"
 
         ElseIf IsInControlArray = True _
@@ -116,7 +116,7 @@ Private Sub Nomenclature_Notes()
                 And EventCode_Val_Check = "Validated" _
                 Then
 
-            DataRange(Irow, 12) = "This event code is mapped but the nomenclature is not mapped and should be if this will be used to complete the measure."
+            DataRange(Irow, 12) = "This event code is mapped but the associated nomenclature is not mapped."
             DataRange(Irow, 16) = "Consulting"
 
         End If
@@ -127,7 +127,7 @@ Private Sub Nomenclature_Notes()
                 And EventCode_Val_Check = "0" _
                 Then
 
-            DataRange(Irow, 12) = "This nomenclature is mapped but the event code will need to be mapped if this will be used to complete the measure."
+            DataRange(Irow, 12) = "This nomenclature is mapped but the associated event code is not mapped."
             DataRange(Irow, 16) = "PCST"
 
         ElseIf LCase(DocType) = "iview" _
@@ -135,7 +135,7 @@ Private Sub Nomenclature_Notes()
                 And EventCode_Val_Check = "Validated" _
                 Then
 
-            DataRange(Irow, 12) = "This event code is mapped but the nomenclature is not mapped and should be if this will be used to complete the measure."
+            DataRange(Irow, 12) = "This event code is mapped but the associated nomenclature is not mapped."
             DataRange(Irow, 16) = "Consulting"
 
         ElseIf LCase(DocType) = "iview" _
@@ -143,7 +143,7 @@ Private Sub Nomenclature_Notes()
                 And EventCode_Val_Check = "0" _
                 Then
 
-            DataRange(Irow, 12) = "This nomenclature and event code are not mapped and should be if this will be used to complete the measure."
+            DataRange(Irow, 12) = "This nomenclature and associated event code are not mapped."
             DataRange(Irow, 16) = "PCST"
 
         End If
