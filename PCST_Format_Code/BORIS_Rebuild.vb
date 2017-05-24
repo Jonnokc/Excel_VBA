@@ -1337,8 +1337,10 @@ UserNameErr:
     'Select Range
     sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Name = "Range_Nom"
 
-    '  Removes dups on the PTCare sheet by source, DTA, Event Code, nomenclature ID, Nomenclature Display
-    Sheets(Code_Sheet).Range("Range_Nom").RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), CS_72_Header_Num_Array(7), CS_72_Header_Num_Array(8), _
+    ' SUB - Remove dupes from Nom - PTCare
+    ''''''''''''''''''''''''''''''''''''''
+    '  Removes dups on the PTCare sheet by source, nomenclature ID, Nomenclature Display
+    Sheets(Code_Sheet).Range("Range_Nom").RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
     CS_72_Header_Num_Array(12), CS_72_Header_Num_Array(13)), _
     Header:=xlYes
 
@@ -1415,10 +1417,10 @@ UserNameErr:
     End If
 
     Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
-      tbl.Name = Sheet_Name
-      tbl.TableStyle = "TableStyleLight9"
-      Columns.AutoFit
-      Range("A1").Select
+    tbl.Name = Sheet_Name
+    tbl.TableStyle = "TableStyleLight9"
+    Columns.AutoFit
+    Range("A1").Select
 
     ' Clears all data validation which could be copied
     Sheet.Cells.Validation.Delete
@@ -1526,7 +1528,7 @@ UserNameErr:
   Workbooks(Source_Name & ".xlsx").Close SaveChanges:=True
   Windows(Validation_File_Name).Activate
 
-' Start over with next source from list
+  ' Start over with next source from list
 Next Source_Name
 
 ' Exiting program after completion
