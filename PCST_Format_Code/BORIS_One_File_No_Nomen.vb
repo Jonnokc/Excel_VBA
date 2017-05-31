@@ -1440,7 +1440,7 @@ UserNameErr:
       ' Hides Concept Column
       Columns(CS_72_Header_Ltr_Array(2)).EntireColumn.Hidden = True
       ' Hides Source Column
-      Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
+      ' Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
       ' Hides Nomenclature Notes Column
       Columns(CS_72_Header_Ltr_Array(15)).EntireColumn.Hidden = True
       ' Hides Social History Notes Column
@@ -1459,7 +1459,7 @@ UserNameErr:
       ' Hides Concept Column
       Columns(CS_72_Header_Ltr_Array(2)).EntireColumn.Hidden = True
       ' Hides Source Column
-      Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
+      ' Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
       ' Hides Nomenclature Notes Column
       Columns(CS_72_Header_Ltr_Array(15)).EntireColumn.Hidden = True
       ' Hides Social History Notes Column
