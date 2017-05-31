@@ -166,17 +166,17 @@ Retry_UserID:
 
 
   ' If the folder already exists then do nothing. Else make it.
-  If Len(Dir(Save_Path, vbDirectory)) = 0 Then
-    ' on error GoTo UserNameErr:
-    MkDir Save_Path                              'Creates the folder
-  Else
-    Folder_Check = MsgBox("Looks like the folder already exists... Do you want to continue?", vbOKCancel + vbQuestion, "BORIS!") 'Folder already exists so continuing on.
-  End If
-
-  ' If user hits cancel on the folder check then cancel program.
-  If Folder_Check = vbCancel Then
-    GoTo User_Exit
-  End If
+  ' If Len(Dir(Save_Path, vbDirectory)) = 0 Then
+  '   ' on error GoTo UserNameErr:
+  '   MkDir Save_Path                              'Creates the folder
+  ' Else
+  '   Folder_Check = MsgBox("Looks like the folder already exists... Do you want to continue?", vbOKCancel + vbQuestion, "BORIS!") 'Folder already exists so continuing on.
+  ' End If
+  '
+  ' ' If user hits cancel on the folder check then cancel program.
+  ' If Folder_Check = vbCancel Then
+  '   GoTo User_Exit
+  ' End If
 
   ' Error handling for wrong user ID entered. If computer fails to find path, it is because username was wrong. Send user back to fix.
   If UserNameErr <> 0 Then
