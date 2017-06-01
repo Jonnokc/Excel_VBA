@@ -10,8 +10,11 @@ Sub ExclusionTesting()
 
     ' Selects the first sheet in the workbook.
     Sheet1.Select
-    SheetName = InputBox("What is the name of the sheet with all the Unmapped codes?")
-    RawCodeColumn = InputBox("What is the column letter for the 'Raw Code Display' Column?")
+    SheetName = InputBox("What is the name of the sheet that you want to review?")
+
+    Sheets(SheetName).Select
+
+    RawCodeColumn = InputBox("What is the column letter of the column you want to check?")
 
 
     ' SUB - Names the range of the Exclusion Rules for Looping
@@ -38,7 +41,8 @@ Sub ExclusionTesting()
     ' Sets the Results column
     With sht
       ' Checks if header already exists
-      Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+      Range("B2").Select
+      Range("B2", Selection.End(xlToRight)).Name = "Header_row"
 
       For Each Header In Range("Header_row")
         If InStr(1, Header, "Exclusion Check Results") > 0 Then
@@ -50,7 +54,7 @@ Sub ExclusionTesting()
 
       ' Names Exclusion Check Results Range
       NextBlank = Mid(Cells(2, Columns.Count).End(xlToLeft).Offset(0, 1).Address, 2, 1)
-      Range(NextBlank & "1") = "Exclusion Check Results"
+      Range(NextBlank & "2") = "Exclusion Check Results"
 
       ' Names the results range.
       sht.Range(NextBlank & "2", sht.Cells(lastrow, NextBlank)).Name = "Results"
