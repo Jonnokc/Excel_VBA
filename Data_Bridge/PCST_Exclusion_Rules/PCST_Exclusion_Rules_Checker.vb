@@ -74,7 +74,6 @@ Sub ExclusionTesting()
 
         If InStr(1, CurrentCode, CurrentRule) > 0 Then
           ExclusionResults(Code, 1) = "Breaks Rule " & CurrentRuleNumber & " " & CurrentRule
-          Exit For
         End If
       Next Code
     Next Rule
