@@ -82,6 +82,7 @@ Sub ExclusionTesting()
   ' Writes the rules back to the excel range.
   Range("Results") = ExclusionResults
 
-
+  Sheets(SheetName).Select
+  Msgbox("Program completed. Check the newly added Exclusion Check Results Column")
 
 End Sub
