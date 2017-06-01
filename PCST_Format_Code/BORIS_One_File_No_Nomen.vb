@@ -388,731 +388,556 @@ UserNameErr:
   First_Time = True
 
   ' Loop through the sources and create the file for each source
-    Set wb = Workbooks.Add
+  Set wb = Workbooks.Add
 
-    ' Saves the new workbook
-    With NewBook
-      ChDir "C:\Users\" & User_Name & "\Documents\" & Project_Name & "_" & "PCST_Files"
-      ActiveWorkbook.SaveAs Filename:= _
-      "C:\Users\" & User_Name & "\Documents\" & Project_Name & "_" & "PCST_File"
-    End With
-
-    Windows(Project_Name & "_PCST_File.xlsx").Activate
-
-    ' Populates basic sheets on new workbook
-    With ActiveWorkbook
-      .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Clinical Documentation"
-      .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Unmapped Codes"
-      .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Health Maintenance Summary"
-      .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Source_Code_Systems"
-    End With
-
-    '
-    ' SUB - Copies the data from the sheets in the validation form to the new workbook sheets
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    ' Finds the start cell to begin range for copying. Different rules for Health Maint Sheet
-    For i = 0 To UBound(Val_Wk_Array)
-      CurrentSheet = Val_Wk_Array(i)
-      CurrentTable = Val_Tbl_Name_Array(i)
-
-      Windows(Validation_File_Name).Activate
-      Sheets(CurrentSheet).Select
-
-      ' Finds the location of the Registry Column
-      If CurrentSheet <> Val_Wk_Array(2) Then
-        Range("A2:U2").Name = "Header_row"
-
-        For Each cell In Range("Header_row")
-          If cell = "Registry" Then
-            start_cell = cell.Address
-            Exit For
-          End If
-        Next cell
-
-      Else
-        ' Changes range for the Health Maintenance Summary Sheet
-        Range("A5:K5").Name = "Header_row"
-
-        For Each cell In Range("Header_row")
-          If cell = "EXPECT_NAME" Then
-            start_cell = cell.Address
-            Exit For
-          End If
-        Next cell
-
-      End If
-
-
-      ' SUB - Copies the data from Validation Form into new file
-      Windows(Validation_File_Name).Activate
-      Sheets(CurrentSheet).Select
-      ActiveSheet.ListObjects(1).Range.AutoFilter Field:=5, _
-      Criteria1:="<>"
-      Range(start_cell).Select
-      Range(Selection, Selection.End(xlDown)).Select
-      Range(Selection, Selection.End(xlToRight)).Select
-      Selection.Copy
-
-      ' Selects the newly created excel file and pastes copied cells onto unmapped codes sheet
-      Windows(Project_Name & "_PCST_File.xlsx").Activate
-      Sheets(CurrentSheet).Select
-      Range("A1").Select
-      ActiveSheet.Paste
-
-      ' Sets header for code short name column
-      If CurrentSheet = Val_Wk_Array(1) Then
-        Range("K1").Value = "Code Short Name"
-      End If
-    Next i
-
-    ' Formats the new sheets as tables
-    For i = 0 To UBound(Val_Wk_Array)
-      ' Confirms Selection of new workbook
-      Windows(Project_Name & "_PCST_File.xlsx").Activate
-      Sheets(Val_Wk_Array(i)).Select
-
-      ' If table was not created when pasting values, then create the table
-      If ActiveSheet.ListObjects.Count = 0 Then
-
-        Set sht = Worksheets(Val_Wk_Array(i))
-        Set StartCell = Range("A1")
-
-        LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
-        LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
-
-        sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
-
-        ' Converts range to table.
-        Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
-        tbl.Name = Val_Tbl_Name_Array(i)
-        tbl.TableStyle = "TableStyleLight12"
-
-        ' Filters to remove blank lines
-        ActiveSheet.ListObjects(1).Range.AutoFilter Field:=5, _
-        Criteria1:="<>"
-      End If
-
-    Next i
-
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' PRIMARY - Finds Location of headers for the Main Sheets
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    ' All worksheets are identical no need to check column locations over and over again....
-    If First_Time = True Then
-      'Re-enables previously disabled settings after all code has run.
-      Application.ScreenUpdating = True
-      Application.EnableEvents = True
-
-      ' Finds Column Header Locations for Clinical Documentation
-      Sheets(Val_Wk_Array(0)).Select
-      Range("A1").Select
-      Range("A1", Selection.End(xlToRight)).Name = "Header_row"
-
-      For i = 0 To UBound(Clin_Doc_Col_Num_Array)
-        Header_Check = False
-        For Each Header In Range("Header_row")
-          If LCase(Clin_Doc_Col_Name_Array(i)) = LCase(Header) Then
-            Clin_Doc_Col_Ltr_Array(i) = Mid(Header.Address, 2, 1)
-            Clin_Doc_Col_Num_Array(i) = Range(Clin_Doc_Col_Ltr_Array(i) & "1").Column
-            Header_Check = True
-            Exit For
-          End If
-        Next Header
-        If Header_Check = False Then
-          Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & "'" & Clin_Doc_Col_Name_Array(i) & "'" & " on the " & Val_Wk_Array(0) & " Sheet....." & vbNewLine & vbNewLine & "However all is not lost! BORIS and you can do this!" & vbNewLine & vbNewLine & "To resolve the issue BORIS needs you to enter the letter of a column to use in place of the one he couldn't find." & vbNewLine & vbNewLine & "Look at the excel sheet behind this box and enter (in uppercase) the letter of the column you want to use in place of the missing one." & vbNewLine & vbNewLine & "If you don't want to replace data from another column in place of the missing one then enter the letter of an empty column(like T or something). If you would rather fix the issue within the file or program then click cancel.", "If I am BORIS who are you?")
-
-          'If user hits cancel then close program.
-          If Header_User_Response = vbNullString Then
-            GoTo User_Exit
-          Else
-            Clin_Doc_Col_Ltr_Array(i) = Header_User_Response
-            Clin_Doc_Col_Num_Array(i) = Range(Clin_Doc_Col_Ltr_Array(i) & "1").Column
-          End If
-        End If
-
-      Next i
-
-      ' Finds column Header Locations for Unmapped Columns
-      Sheets(Val_Wk_Array(1)).Select
-      Range("A1").Select
-      Range("A1", Selection.End(xlToRight)).Name = "Header_row"
-
-      For i = 0 To UBound(Unmapped_Col_Ltr_Array)
-        Header_Check = False
-        For Each Header In Range("Header_row")
-          If LCase(Unmapped_Col_Name_Array(i)) = LCase(Header) Then
-            Unmapped_Col_Ltr_Array(i) = Mid(Header.Address, 2, 1)
-            Unmapped_Col_Num_Array(i) = Range(Unmapped_Col_Ltr_Array(i) & "1").Column
-            Header_Check = True
-            Exit For
-          End If
-        Next Header
-        If Header_Check = False Then
-          Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & "'" & Unmapped_Col_Name_Array(i) & "'" & " on the " & Val_Wk_Array(1) & " Sheet....." & vbNewLine & vbNewLine & "However, However all is not lost! BORIS and you can do this!" & vbNewLine & vbNewLine & "To resolve the issue BORIS needs you to enter the letter of a column to use in place of the one he couldn't find." & vbNewLine & vbNewLine & "Look at the excel sheet behind this box and enter (in uppercase) the letter of the column you want to use in place of the missing one." & vbNewLine & vbNewLine & "If you don't want to replace data from another column in place of the missing one then enter the letter of an empty column(like T or something). If you would rather fix the issue within the file or program then click cancel.", "If I am BORIS who are you?")
-
-          'If user hits cancel then close program.
-          If Header_User_Response = vbNullString Then
-            GoTo User_Exit
-          Else
-            Unmapped_Col_Ltr_Array(i) = Header_User_Response
-            Unmapped_Col_Num_Array(i) = Range(Unmapped_Col_Ltr_Array(i) & "1").Column
-          End If
-        End If
-      Next i
-
-      ' Finds Column Header Locations for Health Maintenance Summary
-      Sheets(Val_Wk_Array(2)).Select
-      Range("A1").Select
-      Range("A1", Selection.End(xlToRight)).Name = "Header_row"
-
-      For i = 0 To UBound(Health_Maint_Name_Array)
-        Header_Check = False
-        For Each Header In Range("Header_row")
-          If LCase(Health_Maint_Name_Array(i)) = LCase(Header) Then
-            Health_Maint_Ltr_Array(i) = Mid(Header.Address, 2, 1)
-            Health_Maint_Num_Array(i) = Range(Health_Maint_Ltr_Array(i) & "1").Column
-            Header_Check = True
-            Exit For
-          End If
-        Next Header
-        If Header_Check = False Then
-          Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & "'" & Health_Maint_Name_Array(i) & "'" & " on the " & Val_Wk_Array(2) & " Sheet....." & vbNewLine & vbNewLine & "However, However all is not lost! BORIS and you can do this!" & vbNewLine & vbNewLine & "To resolve the issue BORIS needs you to enter the letter of a column to use in place of the one he couldn't find." & vbNewLine & vbNewLine & "Look at the excel sheet behind this box and enter (in uppercase) the letter of the column you want to use in place of the missing one." & vbNewLine & vbNewLine & "If you don't want to replace data from another column in place of the missing one then enter the letter of an empty column(like T or something). If you would rather fix the issue within the file or program then click cancel.", "If I am BORIS who are you?")
-
-          ' If user hits cancel then close program.
-          If Header_User_Response = vbNullString Then
-            GoTo User_Exit
-          Else
-            Health_Maint_Ltr_Array(i) = Header_User_Response
-            Health_Maint_Num_Array(i) = Range(Health_Maint_Ltr_Array(i) & "1").Column
-          End If
-        End If
-      Next i
-
-    End If
-
-    ' Re-enables previously disabled settings after all code has run.
-    Application.ScreenUpdating = False
-    Application.EnableEvents = False
-    ' Sets value to prevent repeat of column header finders
-    First_Time = False
-
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' PRIMARY - Unmapped Remove Duplicates and Set Code Short Name
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    ' Unampped codes removes duplicates by EvCode
-    Sheets(Val_Wk_Array(1)).Range(Val_Tbl_Name_Array(1) & "[#All]").RemoveDuplicates Columns:=Array(Unmapped_Col_Num_Array(5)), Header:=xlYes
-
-    '
-    ' SUB - Code Short Name Creation
-    ''''''''''''''''''''''''''''''''
-    Set Table_Obj = Sheets(Val_Wk_Array(1)).ListObjects(1)
-
-    ' Checks current table to determine if any cells are visible. If cells are visible then set "Table_ObjIsVisible" = TRUE
-    Set tbl = Sheets(Val_Wk_Array(1)).ListObjects(1)
-
-    If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-      Table_ObjIsVisible = True
-    Else:
-    Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
-  End If
-
-  ' If there are visible rows, copy the Code System Column to the Code Short Name Column
-  If Table_ObjIsVisible = True Then
-    Sheets(Val_Wk_Array(1)).Select
-    Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & Cells.SpecialCells(xlCellTypeLastCell).Row).Copy Range(Unmapped_Col_Ltr_Array(10) & "2")
-  End If
-
-  ' Clears any autofilters
-  Sheets(Val_Wk_Array(1)).AutoFilter.ShowAllData
-
-  ' filters by concept -> registry for easy reviewing in final product
-  With ActiveWorkbook.Sheets(Val_Wk_Array(1)).ListObjects(1).Sort
-    .SortFields.Add Key:=Range(Val_Tbl_Name_Array(1) & "[Concept]"), SortOn:= _
-    xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    .SortFields.Add Key:=Range(Val_Tbl_Name_Array(1) & "[Measure]"), SortOn:= _
-    xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    .SortFields.Add Key:=Range(Val_Tbl_Name_Array(1) & "[Registry]"), SortOn:= _
-    xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    .Apply
+  ' Saves the new workbook
+  With NewBook
+    ActiveWorkbook.SaveAs Filename:= _
+    "C:\Users\" & User_Name & "\Documents\" & Project_Name & "_" & "PCST_File"
   End With
 
-  '''''''''''''''''''''''''''''''''''''''''''''
-  ' PRIMARY - Change Format of Unmapped Code Sheet Code Short Name
-  '''''''''''''''''''''''''''''''''''''''''''''
-
-  ' Selects Code Short Name Column and names the range for loop
-  Sheets(Val_Wk_Array(1)).Range(Unmapped_Col_Ltr_Array(10) & "2:" & Unmapped_Col_Ltr_Array(10) & ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Name = "Code_Short"
-
-  'Assigns range to variable
-  Set Rng = Range("Code_Short")
-
-  For Each cell In Rng
-    If InStr(cell, "urn:cerner:coding:codingsystem:nomenclature.source_vocab:") > 0 Then
-      cValue = cell.Value
-      cPlace = InStr(cell, "vocab")
-      cell.Value = "nomenclature - " & Right(cValue, Len(cValue) - (cPlace + 5))
-
-      'Checks if code id contains PTCARE and shortens appropriately
-    ElseIf InStr(cell, "PTCARE") > 0 Then
-      cValue = cell.Value
-      cPlace = InStr(cValue, "vocab")
-      cell.Value = Right(cValue, Len(cValue) - (cPlace + 5))
-
-      'Checks if code id contains healthmaintenance and then shortens appropriately
-    ElseIf InStr(cell, "healthmaintenance") > 0 Then
-      cValue = cell.Value
-      cPlace = InStr(cValue, "healthmaintenance")
-      cell.Value = Right(cValue, Len(cValue) - (cPlace + 16))
-
-      'Checks if code id is normal cerner code set and then shortens appropriately
-    ElseIf InStr(cell, "urn:cerner:coding:codingsystem:codeset:") > 0 Then
-      cValue = cell.Value
-      cPlace = InStr(cValue, "codeset:")
-      cell.Value = Right(cValue, Len(cValue) - (cPlace + 7))
-
-      'Checks Catches alternate nomenclature code. This catches the general nomenclature code id's which do not contain the tail descriptor
-    ElseIf InStr(cell, "urn:cerner:coding:codingsystem:nomenclature") > 0 Then
-      cValue = cell.Value
-      cPlace = InStr(cValue, "system:")
-      cell.Value = Right(cValue, Len(cValue) - (cPlace + 6))
-    End If
-
-  Next cell
-
-
-  '   Converts Nomenclature - PTCARE to Nomenclature - Patient Care to standardize naming convention.
-  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-  For Each cell In Rng
-    If cell = "nomenclature - PTCARE" Then
-      cell.Value = "Nomenclature - Patient Care"
-    End If
-  Next cell
-
-  ' Checks Code Short length and if it is more than >28 characters then shorten the name.
-  For Each Code_Short In Range("Code_Short")
-    Current_Value = Code_Short.Value
-    If (Len(Current_Value) > 28) Then
-      Code_Short.ClearContents
-      Code_Short.Value = Left(Current_Value, 28)
-    End If
-
-    ' Checks code short name for invalid characters and replaces them with a space
-    If InStr(Current_Value, ":") > 0 Then
-      Code_Short.ClearContents
-      New_Value = Replace(Current_Value, ":", " ")
-      Code_Short.Value = New_Value
-    End If
-  Next Code_Short
-
-
-  ' filters by concept -> registry for easy reviewing in final product
-  With ActiveWorkbook.Sheets(Val_Wk_Array(0)).ListObjects(1).Sort
-    .SortFields.Add Key:=Range(Val_Tbl_Name_Array(0) & "[Concept]"), SortOn:= _
-    xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    .SortFields.Add Key:=Range(Val_Tbl_Name_Array(0) & "[Measure]"), SortOn:= _
-    xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    .SortFields.Add Key:=Range(Val_Tbl_Name_Array(0) & "[Registry]"), SortOn:= _
-    xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    .Apply
-  End With
-
-  ' SUB - Filters to exclude lines were the nomenclature is mapped
-  Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(15), _
-  Criteria1:= _
-  "<>*This nomenclature is not mapped.*" _
-  , Operator:=xlAnd, Criteria2:= _
-  "<>*This event code is mapped but the associated nomenclature is not mapped.*"
-
-  ' SUB - Creates the source code worksheet
-  '''''''''''''''''''''''''''''''''''''''''''''''''''''''
   Windows(Project_Name & "_PCST_File.xlsx").Activate
 
-  ' Filters the source column for current source
-  ' Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=4, _
-  ' Criteria1:=Project_Name, Operator:=xlAnd
+  ' Populates basic sheets on new workbook
+  With ActiveWorkbook
+    .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Clinical Documentation"
+    .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Unmapped Codes"
+    .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Health Maintenance Summary"
+    .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Source_Code_Systems"
+  End With
 
-  ' Pastes the values from the Code Short Name onto the Source_Code_Systems Sheet
-  Sheets(Val_Wk_Array(1)).Range(Unmapped_Col_Ltr_Array(10) & "1:" & Unmapped_Col_Ltr_Array(10) & ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Copy Sheets("Source_Code_Systems").Range("A1")
+  '
+  ' SUB - Copies the data from the sheets in the validation form to the new workbook sheets
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-  Sheets("Source_Code_Systems").Select
+  ' Finds the start cell to begin range for copying. Different rules for Health Maint Sheet
+  For i = 0 To UBound(Val_Wk_Array)
+    CurrentSheet = Val_Wk_Array(i)
+    CurrentTable = Val_Tbl_Name_Array(i)
 
-  Set sht = Worksheets("Source_Code_Systems")
-  Set StartCell = Range("A1")
+    Windows(Validation_File_Name).Activate
+    Sheets(CurrentSheet).Select
 
-  Worksheets("Source_Code_Systems").UsedRange
+    ' Finds the location of the Registry Column
+    If CurrentSheet <> Val_Wk_Array(2) Then
+      Range("A2:U2").Name = "Header_row"
 
-  ' Find Last Row and Column
-  LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
-  LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
+      For Each cell In Range("Header_row")
+        If cell = "Registry" Then
+          start_cell = cell.Address
+          Exit For
+        End If
+      Next cell
 
-  sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
+    Else
+      ' Changes range for the Health Maintenance Summary Sheet
+      Range("A5:K5").Name = "Header_row"
 
-  Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
-  tbl.Name = "Code_ID_Table"
-  tbl.TableStyle = "TableStyleLight9"
+      For Each cell In Range("Header_row")
+        If cell = "EXPECT_NAME" Then
+          start_cell = cell.Address
+          Exit For
+        End If
+      Next cell
 
-  ' Removes Duplicates from the Code ID Lists
-  Range("Code_ID_Table[[#Headers],[Code Short Name]]").Select
-  Application.CutCopyMode = False
-  ActiveSheet.Range("Code_ID_Table[#All]").RemoveDuplicates Columns:=1, Header:= _
-  xlYes
+    End If
 
 
-  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  ' PRIMARY - Checks to determine how many unique code ID's there are for this source.
-  ' If there is only 1 source "72" then set range to one cell, otherwise select all cells and set the range.
-  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-  'If there are no unmapped codes for this source, then set code source to 72 only.
-  If Range("A2") = "" Then
-    Range("A2").Value = "72"
-  End If
-
-  ' If A3 is empty and thus only 1 code id, then set the range of Code_ID_List to just cell A2
-  If Range("A3") = "" Then
-    Range("A2").Name = "Code_ID_List"
-  Else
-    Range("A2").Select
+    ' SUB - Copies the data from Validation Form into new file
+    Windows(Validation_File_Name).Activate
+    Sheets(CurrentSheet).Select
+    ActiveSheet.ListObjects(1).Range.AutoFilter Field:=5, _
+    Criteria1:="<>"
+    Range(start_cell).Select
     Range(Selection, Selection.End(xlDown)).Select
-    Selection.Name = "Code_ID_List"
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.Copy
+
+    ' Selects the newly created excel file and pastes copied cells onto unmapped codes sheet
+    Windows(Project_Name & "_PCST_File.xlsx").Activate
+    Sheets(CurrentSheet).Select
+    Range("A1").Select
+    ActiveSheet.Paste
+
+    ' Sets header for code short name column
+    If CurrentSheet = Val_Wk_Array(1) Then
+      Range("K1").Value = "Code Short Name"
+    End If
+  Next i
+
+  ' Formats the new sheets as tables
+  For i = 0 To UBound(Val_Wk_Array)
+    ' Confirms Selection of new workbook
+    Windows(Project_Name & "_PCST_File.xlsx").Activate
+    Sheets(Val_Wk_Array(i)).Select
+
+    ' If table was not created when pasting values, then create the table
+    If ActiveSheet.ListObjects.Count = 0 Then
+
+      Set sht = Worksheets(Val_Wk_Array(i))
+      Set StartCell = Range("A1")
+
+      LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
+      LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
+
+      sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
+
+      ' Converts range to table.
+      Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
+      tbl.Name = Val_Tbl_Name_Array(i)
+      tbl.TableStyle = "TableStyleLight12"
+
+      ' Filters to remove blank lines
+      ActiveSheet.ListObjects(1).Range.AutoFilter Field:=5, _
+      Criteria1:="<>"
+    End If
+
+  Next i
+
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  ' PRIMARY - Finds Location of headers for the Main Sheets
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+  ' All worksheets are identical no need to check column locations over and over again....
+  If First_Time = True Then
+    'Re-enables previously disabled settings after all code has run.
+    Application.ScreenUpdating = True
+    Application.EnableEvents = True
+
+    ' Finds Column Header Locations for Clinical Documentation
+    Sheets(Val_Wk_Array(0)).Select
+    Range("A1").Select
+    Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+
+    For i = 0 To UBound(Clin_Doc_Col_Num_Array)
+      Header_Check = False
+      For Each Header In Range("Header_row")
+        If LCase(Clin_Doc_Col_Name_Array(i)) = LCase(Header) Then
+          Clin_Doc_Col_Ltr_Array(i) = Mid(Header.Address, 2, 1)
+          Clin_Doc_Col_Num_Array(i) = Range(Clin_Doc_Col_Ltr_Array(i) & "1").Column
+          Header_Check = True
+          Exit For
+        End If
+      Next Header
+      If Header_Check = False Then
+        Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & "'" & Clin_Doc_Col_Name_Array(i) & "'" & " on the " & Val_Wk_Array(0) & " Sheet....." & vbNewLine & vbNewLine & "However all is not lost! BORIS and you can do this!" & vbNewLine & vbNewLine & "To resolve the issue BORIS needs you to enter the letter of a column to use in place of the one he couldn't find." & vbNewLine & vbNewLine & "Look at the excel sheet behind this box and enter (in uppercase) the letter of the column you want to use in place of the missing one." & vbNewLine & vbNewLine & "If you don't want to replace data from another column in place of the missing one then enter the letter of an empty column(like T or something). If you would rather fix the issue within the file or program then click cancel.", "If I am BORIS who are you?")
+
+        'If user hits cancel then close program.
+        If Header_User_Response = vbNullString Then
+          GoTo User_Exit
+        Else
+          Clin_Doc_Col_Ltr_Array(i) = Header_User_Response
+          Clin_Doc_Col_Num_Array(i) = Range(Clin_Doc_Col_Ltr_Array(i) & "1").Column
+        End If
+      End If
+
+    Next i
+
+    ' Finds column Header Locations for Unmapped Columns
+    Sheets(Val_Wk_Array(1)).Select
+    Range("A1").Select
+    Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+
+    For i = 0 To UBound(Unmapped_Col_Ltr_Array)
+      Header_Check = False
+      For Each Header In Range("Header_row")
+        If LCase(Unmapped_Col_Name_Array(i)) = LCase(Header) Then
+          Unmapped_Col_Ltr_Array(i) = Mid(Header.Address, 2, 1)
+          Unmapped_Col_Num_Array(i) = Range(Unmapped_Col_Ltr_Array(i) & "1").Column
+          Header_Check = True
+          Exit For
+        End If
+      Next Header
+      If Header_Check = False Then
+        Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & "'" & Unmapped_Col_Name_Array(i) & "'" & " on the " & Val_Wk_Array(1) & " Sheet....." & vbNewLine & vbNewLine & "However, However all is not lost! BORIS and you can do this!" & vbNewLine & vbNewLine & "To resolve the issue BORIS needs you to enter the letter of a column to use in place of the one he couldn't find." & vbNewLine & vbNewLine & "Look at the excel sheet behind this box and enter (in uppercase) the letter of the column you want to use in place of the missing one." & vbNewLine & vbNewLine & "If you don't want to replace data from another column in place of the missing one then enter the letter of an empty column(like T or something). If you would rather fix the issue within the file or program then click cancel.", "If I am BORIS who are you?")
+
+        'If user hits cancel then close program.
+        If Header_User_Response = vbNullString Then
+          GoTo User_Exit
+        Else
+          Unmapped_Col_Ltr_Array(i) = Header_User_Response
+          Unmapped_Col_Num_Array(i) = Range(Unmapped_Col_Ltr_Array(i) & "1").Column
+        End If
+      End If
+    Next i
+
+    ' Finds Column Header Locations for Health Maintenance Summary
+    Sheets(Val_Wk_Array(2)).Select
+    Range("A1").Select
+    Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+
+    For i = 0 To UBound(Health_Maint_Name_Array)
+      Header_Check = False
+      For Each Header In Range("Header_row")
+        If LCase(Health_Maint_Name_Array(i)) = LCase(Header) Then
+          Health_Maint_Ltr_Array(i) = Mid(Header.Address, 2, 1)
+          Health_Maint_Num_Array(i) = Range(Health_Maint_Ltr_Array(i) & "1").Column
+          Header_Check = True
+          Exit For
+        End If
+      Next Header
+      If Header_Check = False Then
+        Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & "'" & Health_Maint_Name_Array(i) & "'" & " on the " & Val_Wk_Array(2) & " Sheet....." & vbNewLine & vbNewLine & "However, However all is not lost! BORIS and you can do this!" & vbNewLine & vbNewLine & "To resolve the issue BORIS needs you to enter the letter of a column to use in place of the one he couldn't find." & vbNewLine & vbNewLine & "Look at the excel sheet behind this box and enter (in uppercase) the letter of the column you want to use in place of the missing one." & vbNewLine & vbNewLine & "If you don't want to replace data from another column in place of the missing one then enter the letter of an empty column(like T or something). If you would rather fix the issue within the file or program then click cancel.", "If I am BORIS who are you?")
+
+        ' If user hits cancel then close program.
+        If Header_User_Response = vbNullString Then
+          GoTo User_Exit
+        Else
+          Health_Maint_Ltr_Array(i) = Header_User_Response
+          Health_Maint_Num_Array(i) = Range(Health_Maint_Ltr_Array(i) & "1").Column
+        End If
+      End If
+    Next i
+
   End If
 
-  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  '      PRIMARY - Creates a new sheet and names the sheet with the current source
-  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  ' Re-enables previously disabled settings after all code has run.
+  Application.ScreenUpdating = False
+  Application.EnableEvents = False
+  ' Sets value to prevent repeat of column header finders
+  First_Time = False
 
-  ' Loops through each unique Code ID for this source and creates a sheet with the relavant data.
-  For Each code In Range("Code_ID_List")
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  ' PRIMARY - Unmapped Remove Duplicates and Set Code Short Name
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-    With ActiveWorkbook
-      .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = code
+  ' Unampped codes removes duplicates by EvCode
+  Sheets(Val_Wk_Array(1)).Range(Val_Tbl_Name_Array(1) & "[#All]").RemoveDuplicates Columns:=Array(Unmapped_Col_Num_Array(5)), Header:=xlYes
+
+  '
+  ' SUB - Code Short Name Creation
+  ''''''''''''''''''''''''''''''''
+  Set Table_Obj = Sheets(Val_Wk_Array(1)).ListObjects(1)
+
+  ' Checks current table to determine if any cells are visible. If cells are visible then set "Table_ObjIsVisible" = TRUE
+  Set tbl = Sheets(Val_Wk_Array(1)).ListObjects(1)
+
+  If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+    Table_ObjIsVisible = True
+  Else:
+  Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
+End If
+
+' If there are visible rows, copy the Code System Column to the Code Short Name Column
+If Table_ObjIsVisible = True Then
+  Sheets(Val_Wk_Array(1)).Select
+  Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & Cells.SpecialCells(xlCellTypeLastCell).Row).Copy Range(Unmapped_Col_Ltr_Array(10) & "2")
+End If
+
+' Clears any autofilters
+Sheets(Val_Wk_Array(1)).AutoFilter.ShowAllData
+
+' filters by concept -> registry for easy reviewing in final product
+With ActiveWorkbook.Sheets(Val_Wk_Array(1)).ListObjects(1).Sort
+  .SortFields.Add Key:=Range(Val_Tbl_Name_Array(1) & "[Concept]"), SortOn:= _
+  xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+  .SortFields.Add Key:=Range(Val_Tbl_Name_Array(1) & "[Measure]"), SortOn:= _
+  xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+  .SortFields.Add Key:=Range(Val_Tbl_Name_Array(1) & "[Registry]"), SortOn:= _
+  xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+  .Apply
+End With
+
+'''''''''''''''''''''''''''''''''''''''''''''
+' PRIMARY - Change Format of Unmapped Code Sheet Code Short Name
+'''''''''''''''''''''''''''''''''''''''''''''
+
+' Selects Code Short Name Column and names the range for loop
+Sheets(Val_Wk_Array(1)).Range(Unmapped_Col_Ltr_Array(10) & "2:" & Unmapped_Col_Ltr_Array(10) & ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Name = "Code_Short"
+
+'Assigns range to variable
+Set Rng = Range("Code_Short")
+
+For Each cell In Rng
+  If InStr(cell, "urn:cerner:coding:codingsystem:nomenclature.source_vocab:") > 0 Then
+    cValue = cell.Value
+    cPlace = InStr(cell, "vocab")
+    cell.Value = "nomenclature - " & Right(cValue, Len(cValue) - (cPlace + 5))
+
+    'Checks if code id contains PTCARE and shortens appropriately
+  ElseIf InStr(cell, "PTCARE") > 0 Then
+    cValue = cell.Value
+    cPlace = InStr(cValue, "vocab")
+    cell.Value = Right(cValue, Len(cValue) - (cPlace + 5))
+
+    'Checks if code id contains healthmaintenance and then shortens appropriately
+  ElseIf InStr(cell, "healthmaintenance") > 0 Then
+    cValue = cell.Value
+    cPlace = InStr(cValue, "healthmaintenance")
+    cell.Value = Right(cValue, Len(cValue) - (cPlace + 16))
+
+    'Checks if code id is normal cerner code set and then shortens appropriately
+  ElseIf InStr(cell, "urn:cerner:coding:codingsystem:codeset:") > 0 Then
+    cValue = cell.Value
+    cPlace = InStr(cValue, "codeset:")
+    cell.Value = Right(cValue, Len(cValue) - (cPlace + 7))
+
+    'Checks Catches alternate nomenclature code. This catches the general nomenclature code id's which do not contain the tail descriptor
+  ElseIf InStr(cell, "urn:cerner:coding:codingsystem:nomenclature") > 0 Then
+    cValue = cell.Value
+    cPlace = InStr(cValue, "system:")
+    cell.Value = Right(cValue, Len(cValue) - (cPlace + 6))
+  End If
+
+Next cell
+
+
+'   Converts Nomenclature - PTCARE to Nomenclature - Patient Care to standardize naming convention.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+For Each cell In Rng
+  If cell = "nomenclature - PTCARE" Then
+    cell.Value = "Nomenclature - Patient Care"
+  End If
+Next cell
+
+' Checks Code Short length and if it is more than >28 characters then shorten the name.
+For Each Code_Short In Range("Code_Short")
+  Current_Value = Code_Short.Value
+  If (Len(Current_Value) > 28) Then
+    Code_Short.ClearContents
+    Code_Short.Value = Left(Current_Value, 28)
+  End If
+
+  ' Checks code short name for invalid characters and replaces them with a space
+  If InStr(Current_Value, ":") > 0 Then
+    Code_Short.ClearContents
+    New_Value = Replace(Current_Value, ":", " ")
+    Code_Short.Value = New_Value
+  End If
+Next Code_Short
+
+
+' filters by concept -> registry for easy reviewing in final product
+With ActiveWorkbook.Sheets(Val_Wk_Array(0)).ListObjects(1).Sort
+  .SortFields.Add Key:=Range(Val_Tbl_Name_Array(0) & "[Concept]"), SortOn:= _
+  xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+  .SortFields.Add Key:=Range(Val_Tbl_Name_Array(0) & "[Measure]"), SortOn:= _
+  xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+  .SortFields.Add Key:=Range(Val_Tbl_Name_Array(0) & "[Registry]"), SortOn:= _
+  xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+  .Apply
+End With
+
+' SUB - Filters to exclude lines were the nomenclature is mapped
+Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(15), _
+Criteria1:= _
+"<>*This nomenclature is not mapped.*" _
+, Operator:=xlAnd, Criteria2:= _
+"<>*This event code is mapped but the associated nomenclature is not mapped.*"
+
+' SUB - Creates the source code worksheet
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Windows(Project_Name & "_PCST_File.xlsx").Activate
+
+' Filters the source column for current source
+' Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=4, _
+' Criteria1:=Project_Name, Operator:=xlAnd
+
+' Pastes the values from the Code Short Name onto the Source_Code_Systems Sheet
+Sheets(Val_Wk_Array(1)).Range(Unmapped_Col_Ltr_Array(10) & "1:" & Unmapped_Col_Ltr_Array(10) & ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Copy Sheets("Source_Code_Systems").Range("A1")
+
+Sheets("Source_Code_Systems").Select
+
+Set sht = Worksheets("Source_Code_Systems")
+Set StartCell = Range("A1")
+
+Worksheets("Source_Code_Systems").UsedRange
+
+' Find Last Row and Column
+LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
+LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
+
+sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
+
+Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
+tbl.Name = "Code_ID_Table"
+tbl.TableStyle = "TableStyleLight9"
+
+' Removes Duplicates from the Code ID Lists
+Range("Code_ID_Table[[#Headers],[Code Short Name]]").Select
+Application.CutCopyMode = False
+ActiveSheet.Range("Code_ID_Table[#All]").RemoveDuplicates Columns:=1, Header:= _
+xlYes
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' PRIMARY - Checks to determine how many unique code ID's there are for this source.
+' If there is only 1 source "72" then set range to one cell, otherwise select all cells and set the range.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+'If there are no unmapped codes for this source, then set code source to 72 only.
+If Range("A2") = "" Then
+  Range("A2").Value = "72"
+End If
+
+' If A3 is empty and thus only 1 code id, then set the range of Code_ID_List to just cell A2
+If Range("A3") = "" Then
+  Range("A2").Name = "Code_ID_List"
+Else
+  Range("A2").Select
+  Range(Selection, Selection.End(xlDown)).Select
+  Selection.Name = "Code_ID_List"
+End If
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'      PRIMARY - Creates a new sheet and names the sheet with the current source
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+' Loops through each unique Code ID for this source and creates a sheet with the relavant data.
+For Each code In Range("Code_ID_List")
+
+  With ActiveWorkbook
+    .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = code
+  End With
+
+  Code_Sheet = code
+
+  ' Special instructions for code set 72
+  If code = "72" Then
+
+    ' Populates the headers on the CS72 sheet
+    Off_Count = 0
+    For i = 0 To UBound(CS_72_Header_Name_Array)
+      Sheets(Code_Sheet).Range("A1").Offset(0, Off_Count).Value = CS_72_Header_Name_Array(i)
+      Off_Count = Off_Count + 1
+    Next i
+
+    ' Records the Addresses of the CS 72 headers
+    Sheets(Code_Sheet).Select
+    Range("A1").Select
+    Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+
+    For i = 0 To UBound(CS_72_Header_Num_Array)
+      col_Count = 0
+      For Each Header In Range("Header_row")
+        col_Count = col_Count + 1
+        If LCase(CS_72_Header_Num_Array(i)) = LCase(Header) Then
+          CS_72_Header_Ltr_Array(i) = Mid(Header.Address, 2, 1)
+          CS_72_Header_Num_Array(i) = col_Count
+          Exit For
+        End If
+      Next Header
+    Next i
+
+
+    ' SUB - Copies Clinical Documentation to 72
+    ''''''''''''''''''''''''''''''''''''''''''''
+
+    With Sheets(Val_Wk_Array(0))
+
+      ' Clears any extra filers
+      If Sheets(Val_Wk_Array(0)).FilterMode Then
+        Sheets(Val_Wk_Array(0)).ShowAllData
+      End If
+
+      ' Filters The Source column for current source
+      ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
+      ' Criteria1:=Project_Name, Operator:=xlAnd
+
+      'Checks current table to determine if any cells are visible to copy
+      Set tbl = Sheets(Val_Wk_Array(0)).ListObjects(1)
+
+      If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+        Table_ObjIsVisible = True
+      Else
+        Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
+      End If
+
+      'If data is visible, and this is CS 72 then copy visible data
+      If Table_ObjIsVisible = True Then
+
+        ' Finds the last row of the Clinical Documentation Sheet for copy Range
+        Sheets(Val_Wk_Array(0)).Select
+
+        LR = Range("A" & Rows.Count).End(xlUp).Row
+
+        ' Copies Registry Column
+        Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
+
+        ' Copies Measure Column
+        Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
+
+        ' Copies Concept Column
+        Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
+
+        ' Copies Source Column
+        Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
+
+        ' Copies DocumentType Column
+        Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
+
+        ' Copies Name Column
+        Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
+
+        ' Copies Section Column
+        Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
+
+        ' Copies DTA Column
+        Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
+
+        ' Copies EventCode Column
+        Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
+
+        ' Copies EventDisplay Column
+        Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
+
+        ' Copies ESH Column
+        Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
+
+        ' Copies ControlType Column
+        Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
+
+        ' ' Copies NomenclatureID Column
+        ' Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
+        '
+        ' ' Copies Nomenclature Display Column
+        ' Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
+        '
+        ' ' Copies TaskAssay Column
+        ' Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
+        '
+        ' ' Copies the Nomenclature Notes Column
+        ' Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
+
+        ' Copies the Social History Notes Column
+        Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
+
+        ' Copies the Grid Notes Column
+        Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
+
+        ' Copies the Freetext Notes Column
+        Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
+
+        ' Copies the Team Column
+        Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
+
+        ' Copies the Internal Review Source Column
+        Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
+      End If
+
     End With
 
-    Code_Sheet = code
 
-    ' Special instructions for code set 72
-    If code = "72" Then
 
-      ' Populates the headers on the CS72 sheet
-      Off_Count = 0
-      For i = 0 To UBound(CS_72_Header_Name_Array)
-        Sheets(Code_Sheet).Range("A1").Offset(0, Off_Count).Value = CS_72_Header_Name_Array(i)
-        Off_Count = Off_Count + 1
-      Next i
+    '    SUB - Copies unmapped codes to 72 sheet
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-      ' Records the Addresses of the CS 72 headers
-      Sheets(Code_Sheet).Select
-      Range("A1").Select
-      Range("A1", Selection.End(xlToRight)).Name = "Header_row"
-
-      For i = 0 To UBound(CS_72_Header_Num_Array)
-        col_Count = 0
-        For Each Header In Range("Header_row")
-          col_Count = col_Count + 1
-          If LCase(CS_72_Header_Num_Array(i)) = LCase(Header) Then
-            CS_72_Header_Ltr_Array(i) = Mid(Header.Address, 2, 1)
-            CS_72_Header_Num_Array(i) = col_Count
-            Exit For
-          End If
-        Next Header
-      Next i
-
-
-      ' SUB - Copies Clinical Documentation to 72
-      ''''''''''''''''''''''''''''''''''''''''''''
-
-      With Sheets(Val_Wk_Array(0))
-
-        ' Clears any extra filers
-        If Sheets(Val_Wk_Array(0)).FilterMode Then
-          Sheets(Val_Wk_Array(0)).ShowAllData
-        End If
-
-        ' Filters The Source column for current source
-        ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
-        ' Criteria1:=Project_Name, Operator:=xlAnd
-
-        'Checks current table to determine if any cells are visible to copy
-        Set tbl = Sheets(Val_Wk_Array(0)).ListObjects(1)
-
-        If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-          Table_ObjIsVisible = True
-        Else
-          Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
-        End If
-
-        'If data is visible, and this is CS 72 then copy visible data
-        If Table_ObjIsVisible = True Then
-
-          ' Finds the last row of the Clinical Documentation Sheet for copy Range
-          Sheets(Val_Wk_Array(0)).Select
-
-          LR = Range("A" & Rows.Count).End(xlUp).Row
-
-          ' Copies Registry Column
-          Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
-
-          ' Copies Measure Column
-          Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
-
-          ' Copies Concept Column
-          Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
-
-          ' Copies Source Column
-          Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
-
-          ' Copies DocumentType Column
-          Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
-
-          ' Copies Name Column
-          Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
-
-          ' Copies Section Column
-          Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
-
-          ' Copies DTA Column
-          Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
-
-          ' Copies EventCode Column
-          Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
-
-          ' Copies EventDisplay Column
-          Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
-
-          ' Copies ESH Column
-          Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
-
-          ' Copies ControlType Column
-          Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
-
-          ' ' Copies NomenclatureID Column
-          ' Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
-          '
-          ' ' Copies Nomenclature Display Column
-          ' Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
-          '
-          ' ' Copies TaskAssay Column
-          ' Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
-          '
-          ' ' Copies the Nomenclature Notes Column
-          ' Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
-
-          ' Copies the Social History Notes Column
-          Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
-
-          ' Copies the Grid Notes Column
-          Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
-
-          ' Copies the Freetext Notes Column
-          Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
-
-          ' Copies the Team Column
-          Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
-
-          ' Copies the Internal Review Source Column
-          Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
-        End If
-
-      End With
-
-
-
-      '    SUB - Copies unmapped codes to 72 sheet
-      '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-      With Sheets(Val_Wk_Array(1))
-
-        ' Clears any extra filers
-        If Sheets(Val_Wk_Array(1)).FilterMode Then
-          Sheets(Val_Wk_Array(1)).ShowAllData
-        End If
-
-        ' Applies filters for only this source and code being currently reviewed.
-        ' Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(3), _
-        ' Criteria1:=Project_Name, Operator:=xlAnd
-
-        ' Filters The Code Short Name Column for current code in loop
-        Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(10), _
-        Criteria1:=code, Operator:=xlAnd
-
-        Set tbl = Sheets(Val_Wk_Array(1)).ListObjects(1)
-
-        If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-          Table_ObjIsVisible = True
-        Else
-          Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
-        End If
-
-        ' If data is visible then copy data
-        If Table_ObjIsVisible = True Then
-
-          ' Finds the last row of the data sheet for copying
-          Sheets(Val_Wk_Array(1)).Select
-          LR = Range("A" & Rows.Count).End(xlUp).Row
-
-          ' Finds the next blank row on the code sheet
-          Sheets(Code_Sheet).Select
-          Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
-
-          Sheets(Val_Wk_Array(1)).Select
-
-          ' Copies the Registry Column
-          Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & Next_Blank_Row)
-
-          ' Copies the Measure Column
-          Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & Next_Blank_Row)
-
-          ' Copies the Concept Column
-          Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & Next_Blank_Row)
-
-          ' Copies the Source Column
-          Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
-
-          ' Copies the Code System ID Column
-          Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & Next_Blank_Row)
-
-          ' Copies the Raw Code Column
-          Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
-
-          ' Copies the Raw Code Display Column
-          Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
-
-          ' Copies the Team Column
-          Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & Next_Blank_Row)
-
-          ' Copies the Internal Review Source Column
-          Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
-        End If
-
-      End With
-
-
-      ' Was removed since we are not submitting Health Maint Codes
-
-      '       SUB - Populates Health Maintenance visible data to CS 72
-      '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-      ' Sheets(Val_Wk_Array(2)).Select
-      '
-      ' Sheets(Val_Wk_Array(2)).ListObjects("Health_Maint_Table").Range.AutoFilter Field:=Health_Maint_Num_Array(10), _
-      ' Criteria1:=Project_Name, Operator:=xlAnd
-      '
-      ' Set tbl = Sheets(Val_Wk_Array(2)).ListObjects(1)
-      '
-      ' If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-      '   Table_ObjIsVisible = True
-      ' Else
-      '   Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
-      ' End If
-      '
-      ' ' If data is visible then copy visible data
-      ' If Table_ObjIsVisible = True Then
-      '
-      '   ' Finds the last row of the data sheet for copying
-      '   Sheets(Val_Wk_Array(2)).Select
-      '   LR = Range("A" & Rows.Count).End(xlUp).Row
-      '
-      '   ' Sets next blank row
-      '   Sheets(Code_Sheet).Select
-      '   Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
-      '
-      '   With Sheets(Val_Wk_Array(2))
-      '
-      '     ' Copies the Source Column to Source
-      '     Range(Health_Maint_Ltr_Array(10) & "2:" & Health_Maint_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
-      '
-      '     ' Copies Expect_Meaning Column to Name
-      '     Range(Health_Maint_Ltr_Array(1) & "2:" & Health_Maint_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & Next_Blank_Row)
-      '
-      '     ' Copies Satisfier_Meaning Column to Section
-      '     Range(Health_Maint_Ltr_Array(6) & "2:" & Health_Maint_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & Next_Blank_Row)
-      '
-      '     ' Copies Entry_Type Column to ControlType
-      '     Range(Health_Maint_Ltr_Array(2) & "2:" & Health_Maint_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & Next_Blank_Row)
-      '
-      '     ' Copies Event_CD Column to EventCode
-      '     Range(Health_Maint_Ltr_Array(8) & "2:" & Health_Maint_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
-      '
-      '     ' Copies Event_CD_DISP Column to EventDisplay
-      '     Range(Health_Maint_Ltr_Array(9) & "2:" & Health_Maint_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
-      '
-      '     ' Copies the Internal Review Source Column
-      '     Range(Health_Maint_Ltr_Array(11) & "2:" & Health_Maint_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
-      '
-      '   End With
-      '
-      ' End If
-
-      ' SUB - Removes duplicates from the CS 72 sheet
-      ''''''''''''''''''''''''''''''''''''''''''''''''
-
-      Set sht = Sheets(Code_Sheet)
-
-      With sht
-        Set StartCell = .Range("A1")
-        'Find Last Row and Column
-        LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
-        LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
-
-        'Select Range
-        sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Name = "Range_72"
-
-        Sheets(Code_Sheet).Range("Range_72").RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
-        CS_72_Header_Num_Array(8), CS_72_Header_Num_Array(9)), _
-        Header:=xlYes
-
-      End With
-
-
-      '       SUB - Populates headers for all other sheets
-      '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    ElseIf code <> "Nomenclature - Patient Care" Then
-
-      Off_Count = 0
-      For i = 0 To UBound(Gen_Sht_Header_Name_Array)
-        Range("A1").Offset(0, Off_Count).Value = Gen_Sht_Header_Name_Array(i)
-        Off_Count = Off_Count + 1
-      Next i
-
-      ' Records the Addresses of the Non-CS72 sheet headers
-      Sheets(Code_Sheet).Select
-      Range("A1").Select
-      Range("A1", Selection.End(xlToRight)).Name = "Header_row"
-
-      For i = 0 To UBound(Gen_Sht_Header_Ltr_Array)
-        col_Count = 0
-        For Each Header In Range("Header_row")
-          col_Count = col_Count + 1
-          If LCase(Gen_Sht_Header_Num_Array(i)) = LCase(Header) Then
-            Gen_Sht_Header_Ltr_Array(i) = Mid(Header.Address, 2, 1)
-            Gen_Sht_Header_Num_Array(i) = col_Count
-            Exit For
-          End If
-        Next Header
-      Next i
-
-
-      Sheets(Val_Wk_Array(1)).Select
+    With Sheets(Val_Wk_Array(1))
 
       ' Clears any extra filers
       If Sheets(Val_Wk_Array(1)).FilterMode Then
         Sheets(Val_Wk_Array(1)).ShowAllData
       End If
 
-      ' Filters unmapped codes table for current source
+      ' Applies filters for only this source and code being currently reviewed.
       ' Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(3), _
       ' Criteria1:=Project_Name, Operator:=xlAnd
 
-      ' Filters for current code within loop
+      ' Filters The Code Short Name Column for current code in loop
       Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(10), _
       Criteria1:=code, Operator:=xlAnd
 
-      ' Sets variable to the table on the active sheet.
       Set tbl = Sheets(Val_Wk_Array(1)).ListObjects(1)
 
       If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
@@ -1121,387 +946,561 @@ UserNameErr:
         Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
       End If
 
-      ' If data is visible then copy data.
+      ' If data is visible then copy data
       If Table_ObjIsVisible = True Then
 
         ' Finds the last row of the data sheet for copying
         Sheets(Val_Wk_Array(1)).Select
         LR = Range("A" & Rows.Count).End(xlUp).Row
 
-        ' Finds next blank row
+        ' Finds the next blank row on the code sheet
         Sheets(Code_Sheet).Select
         Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
 
+        Sheets(Val_Wk_Array(1)).Select
 
-        With Sheets(Val_Wk_Array(1))
+        ' Copies the Registry Column
+        Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & Next_Blank_Row)
 
-          ' Copies the Registry Column
-          Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(0) & Next_Blank_Row)
+        ' Copies the Measure Column
+        Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & Next_Blank_Row)
 
-          ' Copies the Measure Column
-          Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(1) & Next_Blank_Row)
+        ' Copies the Concept Column
+        Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & Next_Blank_Row)
 
-          ' Copies the Concept Column
-          Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(2) & Next_Blank_Row)
+        ' Copies the Source Column
+        Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
 
-          ' Copies the Source Column
-          Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(3) & Next_Blank_Row)
+        ' Copies the Code System ID Column
+        Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & Next_Blank_Row)
 
-          ' Copies the Code System ID Column
-          Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(4) & Next_Blank_Row)
+        ' Copies the Raw Code Column
+        Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
 
-          ' Copies the Raw Code Column
-          Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(8) & Next_Blank_Row)
+        ' Copies the Raw Code Display Column
+        Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
 
-          ' Copies the Raw Code Display Column
-          Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(9) & Next_Blank_Row)
+        ' Copies the Team Column
+        Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & Next_Blank_Row)
 
-          ' Copies the Count Column
-          Range(Unmapped_Col_Ltr_Array(7) & "2:" & Unmapped_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(10) & Next_Blank_Row)
-
-          ' Copies the Notes Column
-          Range(Unmapped_Col_Ltr_Array(8) & "2:" & Unmapped_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(16) & Next_Blank_Row)
-
-          ' Copies the Team Column
-          Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(15) & Next_Blank_Row)
-
-          ' Copies the Internal Review Source Column
-          Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(19) & Next_Blank_Row)
-
-        End With
-
+        ' Copies the Internal Review Source Column
+        Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
       End If
 
-    End If
-
-  Next code
-
-  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  ' PRIMARY - Populates Nomenclature ID data onto the Nomenclature - PTCARE sheet
-  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  ' Sheets(Val_Wk_Array(0)).Select
-  '
-  ' ' Clears any extra filers
-  ' If Sheets(Val_Wk_Array(0)).FilterMode Then
-  '   Sheets(Val_Wk_Array(0)).ShowAllData
-  ' End If
-  '
-  ' 'Filters the clinical doc table by source and makes sure nomenclature ID
-  ' ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
-  ' ' Criteria1:=Project_Name, Operator:=xlAnd
-  '
-  ' ' Filters to make sure nomenclature ID is not blank
-  ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(12), _
-  ' Criteria1:="<>"
-  '
-  ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(15), _
-  ' Criteria1:= _
-  ' "<>*This nomenclature is mapped but the associated event code is not mapped.*"
-  '
-  '
-  ' Set Table_Obj = ActiveSheet.ListObjects(1)
-  '
-  ' 'Checks filtered table for visible data.
-  ' If Table_Obj.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
-  '   Table_ObjIsVisible = True
-  ' Else
-  '   Table_ObjIsVisible = False
-  ' End If
-  '
-  ' ' If data is visible then copy data.
-  ' If Table_ObjIsVisible = True Then
-  '   ' Check to see if Nomenclature - Patient Care sheet already exists
-  '   For Each Sheet In Worksheets
-  '     exists = False
-  '     If Sheet.Name = "Nomenclature - Patient Care" Then
-  '       exists = True
-  '       Exit For
-  '     End If
-  '   Next Sheet
-  '
-  '   ' If sheet does NOT exist, then create the sheet and populate headers
-  '   If exists = False Then
-  '     ActiveWorkbook.Sheets.Add(After:=Worksheets(1)).Name = "Nomenclature - Patient Care"
-  '
-  '     ' Finds the last row of the Clinical Documentation Sheet for copy Range
-  '     Sheets(Val_Wk_Array(0)).Select
-  '     LR = Range("A" & Rows.Count).End(xlUp).Row
-  '
-  '     Code_Sheet = "Nomenclature - Patient Care"
-  '
-  '     ' Populates the headers on the PTCare sheet
-  '     Off_Count = 0
-  '     For i = 0 To UBound(CS_72_Header_Name_Array)
-  '       Sheets(Code_Sheet).Range("A1").Offset(0, Off_Count).Value = CS_72_Header_Name_Array(i)
-  '       Off_Count = Off_Count + 1
-  '     Next i
-  '   End If
-  '
-  '   ' Records the Addresses of the PTCare headers
-  '   Sheets(Code_Sheet).Select
-  '   Range("A1").Select
-  '   Range("A1", Selection.End(xlToRight)).Name = "Header_row"
-  '
-  '   For i = 0 To UBound(CS_72_Header_Num_Array)
-  '     col_Count = 0
-  '     For Each Header In Range("Header_row")
-  '       col_Count = col_Count + 1
-  '       If LCase(CS_72_Header_Num_Array(i)) = LCase(Header) Then
-  '         CS_72_Header_Ltr_Array(i) = Mid(Header.Address, 2, 1)
-  '         CS_72_Header_Num_Array(i) = col_Count
-  '         Exit For
-  '       End If
-  '     Next Header
-  '   Next i
-  '
-  '   Sheets(Val_Wk_Array(0)).Select
-  '
-  '   With Sheets(Val_Wk_Array(0))
-  '     ' Copies Registry Column
-  '     Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
-  '
-  '     ' Copies Measure Column
-  '     Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
-  '
-  '     ' Copies Concept Column
-  '     Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
-  '
-  '     ' Copies Source Column
-  '     Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
-  '
-  '     ' Copies DocumentType Column
-  '     Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
-  '
-  '     ' Copies Name Column
-  '     Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
-  '
-  '     ' Copies Section Column
-  '     Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
-  '
-  '     ' Copies DTA Column
-  '     Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
-  '
-  '     ' Copies EventCode Column
-  '     Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
-  '
-  '     ' Copies EventDisplay Column
-  '     Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
-  '
-  '     ' Copies ESH Column
-  '     Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
-  '
-  '     ' Copies ControlType Column
-  '     Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
-  '
-  '     ' Copies NomenclatureID Column
-  '     Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
-  '
-  '     ' Copies Nomenclature Display Column
-  '     Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
-  '
-  '     ' Copies TaskAssay Column
-  '     Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
-  '
-  '     ' Copies the Nomenclature Notes Column
-  '     Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
-  '
-  '     ' Copies the Social History Notes Column
-  '     Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
-  '
-  '     ' Copies the Grid Notes Column
-  '     Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
-  '
-  '     ' Copies the Freetext Notes Column
-  '     Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
-  '
-  '     ' Copies the Team Column
-  '     Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
-  '
-  '     ' Copies the Internal Review Source Column
-  '     Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
-  '
-  '   End With
+    End With
 
 
-  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  '   PRIMARY - Workbook Cleanup
-  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Was removed since we are not submitting Health Maint Codes
 
-  ' Deletes the extra sheets not needed
-  Application.DisplayAlerts = False
+    '       SUB - Populates Health Maintenance visible data to CS 72
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-  For Each Sheet In Worksheets
-    If Sheet.Name = "Unmapped Codes" _
-    Or Sheet.Name = "Health Maintenance Summary" _
-    Or Sheet.Name = "Clinical Documentation" _
-    Or Sheet.Name = "Source_Code_Systems" _
-    Or Sheet.Name = "Sheet1" _
-    Then
-      Sheet.Delete
-    End If
-  Next Sheet
+    ' Sheets(Val_Wk_Array(2)).Select
+    '
+    ' Sheets(Val_Wk_Array(2)).ListObjects("Health_Maint_Table").Range.AutoFilter Field:=Health_Maint_Num_Array(10), _
+    ' Criteria1:=Project_Name, Operator:=xlAnd
+    '
+    ' Set tbl = Sheets(Val_Wk_Array(2)).ListObjects(1)
+    '
+    ' If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+    '   Table_ObjIsVisible = True
+    ' Else
+    '   Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
+    ' End If
+    '
+    ' ' If data is visible then copy visible data
+    ' If Table_ObjIsVisible = True Then
+    '
+    '   ' Finds the last row of the data sheet for copying
+    '   Sheets(Val_Wk_Array(2)).Select
+    '   LR = Range("A" & Rows.Count).End(xlUp).Row
+    '
+    '   ' Sets next blank row
+    '   Sheets(Code_Sheet).Select
+    '   Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
+    '
+    '   With Sheets(Val_Wk_Array(2))
+    '
+    '     ' Copies the Source Column to Source
+    '     Range(Health_Maint_Ltr_Array(10) & "2:" & Health_Maint_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & Next_Blank_Row)
+    '
+    '     ' Copies Expect_Meaning Column to Name
+    '     Range(Health_Maint_Ltr_Array(1) & "2:" & Health_Maint_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & Next_Blank_Row)
+    '
+    '     ' Copies Satisfier_Meaning Column to Section
+    '     Range(Health_Maint_Ltr_Array(6) & "2:" & Health_Maint_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & Next_Blank_Row)
+    '
+    '     ' Copies Entry_Type Column to ControlType
+    '     Range(Health_Maint_Ltr_Array(2) & "2:" & Health_Maint_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & Next_Blank_Row)
+    '
+    '     ' Copies Event_CD Column to EventCode
+    '     Range(Health_Maint_Ltr_Array(8) & "2:" & Health_Maint_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & Next_Blank_Row)
+    '
+    '     ' Copies Event_CD_DISP Column to EventDisplay
+    '     Range(Health_Maint_Ltr_Array(9) & "2:" & Health_Maint_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & Next_Blank_Row)
+    '
+    '     ' Copies the Internal Review Source Column
+    '     Range(Health_Maint_Ltr_Array(11) & "2:" & Health_Maint_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & Next_Blank_Row)
+    '
+    '   End With
+    '
+    ' End If
 
-  Application.DisplayAlerts = True
+    ' SUB - Removes duplicates from the CS 72 sheet
+    ''''''''''''''''''''''''''''''''''''''''''''''''
 
-  '
-  ' SUB - Creates and Populates Index Sheet
-  '''''''''''''''''''''''''''''''''''''''''
-
-  ActiveWorkbook.Sheets.Add(Before:=Worksheets(1)).Name = "Index Sheet"
-
-  Range("A1").Select
-  Selection.Value = "Index Sheet"
-  ActiveCell.Offset(1, 0).Select
-
-  For Each Sheet In Worksheets
-    If Sheet.Name <> "Index Sheet" Then
-      ActiveSheet.Hyperlinks.Add Anchor:=Selection, Address:="", SubAddress:="'" & Sheet.Name & "'" & "!A1", TextToDisplay:=Sheet.Name
-      ActiveCell.Offset(1, 0).Select
-    End If
-  Next Sheet
-
-  '
-  ' SUB - Formats remaining sheets as tables for appearance
-  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-  For Each Sheet In Worksheets
-    Sheet.Activate
-
-    Set sht = Sheet
-    Set StartCell = Range("A1")
+    Set sht = Sheets(Code_Sheet)
 
     With sht
-      LastRow = .Range("A" & .Rows.Count).End(xlUp).Row
+      Set StartCell = .Range("A1")
+      'Find Last Row and Column
+      LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
       LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
-      Sheet_Name = Sheet.Name
+
+      'Select Range
+      sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Name = "Range_72"
+
+      Sheets(Code_Sheet).Range("Range_72").RemoveDuplicates Columns:=Array(CS_72_Header_Num_Array(3), _
+      CS_72_Header_Num_Array(8), CS_72_Header_Num_Array(9)), _
+      Header:=xlYes
+
     End With
 
-    With sht.Range("A2:A" & LastRow)
-      If WorksheetFunction.CountBlank(.Cells) > 0 Then
-        .SpecialCells(xlCellTypeBlanks).EntireRow.Delete
-      End If
-    End With
 
-    sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
+    '       SUB - Populates headers for all other sheets
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-    ' If User wants to clear all the formatting then clear all, else clear boarders
-    If ClearFormatting = True Then
-      Selection.ClearFormats
-    Else
-      Selection.Borders.LineStyle = xlNone
-    End If
+  ElseIf code <> "Nomenclature - Patient Care" Then
 
-    Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
-    tbl.Name = Sheet_Name
-    tbl.TableStyle = "TableStyleLight9"
-    Columns.AutoFit
+    Off_Count = 0
+    For i = 0 To UBound(Gen_Sht_Header_Name_Array)
+      Range("A1").Offset(0, Off_Count).Value = Gen_Sht_Header_Name_Array(i)
+      Off_Count = Off_Count + 1
+    Next i
+
+    ' Records the Addresses of the Non-CS72 sheet headers
+    Sheets(Code_Sheet).Select
     Range("A1").Select
+    Range("A1", Selection.End(xlToRight)).Name = "Header_row"
 
-    ' Clears all data validation which could be copied
-    Sheet.Cells.Validation.Delete
+    For i = 0 To UBound(Gen_Sht_Header_Ltr_Array)
+      col_Count = 0
+      For Each Header In Range("Header_row")
+        col_Count = col_Count + 1
+        If LCase(Gen_Sht_Header_Num_Array(i)) = LCase(Header) Then
+          Gen_Sht_Header_Ltr_Array(i) = Mid(Header.Address, 2, 1)
+          Gen_Sht_Header_Num_Array(i) = col_Count
+          Exit For
+        End If
+      Next Header
+    Next i
 
-  Next Sheet
 
-  ' SUB - Highlights Important Columns on Nomenclature Sheet
-  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Sheets(Val_Wk_Array(1)).Select
 
-  For Each Sheet In Worksheets
-    CurrentSheet = Sheet.Name
-
-    ' Highlights 72 and Nomenclature Columns
-    If CurrentSheet = "Nomenclature - Patient Care" Then
-      Sheets(CurrentSheet).Select
-      LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
-      ' Selects DTA Column
-      Range(CS_72_Header_Ltr_Array(7) & "2:" & CS_72_Header_Ltr_Array(7) & LastRow).Interior.Color = 16764108
-      ' Colors the Nom Id Column
-      Range(CS_72_Header_Ltr_Array(12) & "2:" & CS_72_Header_Ltr_Array(12) & LastRow).Interior.Color = 16764108
-      ' Colors the Nom Display Column
-      Range(CS_72_Header_Ltr_Array(13) & "2:" & CS_72_Header_Ltr_Array(13) & LastRow).Interior.Color = 16764108
-
-    ElseIf CurrentSheet = "72" Then
-      Sheets(CurrentSheet).Select
-      LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
-      ' Colors Event Code Column
-      Range(CS_72_Header_Ltr_Array(8) & "2:" & CS_72_Header_Ltr_Array(8) & LastRow).Interior.Color = 16764108
-      ' Colors Event Code Display Column
-      Range(CS_72_Header_Ltr_Array(9) & "2:" & CS_72_Header_Ltr_Array(9) & LastRow).Interior.Color = 16764108
+    ' Clears any extra filers
+    If Sheets(Val_Wk_Array(1)).FilterMode Then
+      Sheets(Val_Wk_Array(1)).ShowAllData
     End If
 
-  Next Sheet
+    ' Filters unmapped codes table for current source
+    ' Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(3), _
+    ' Criteria1:=Project_Name, Operator:=xlAnd
 
-  ' SUB - Hides Extra Columns
-  '''''''''''''''''''''''''''''
-  For Each Sheet In Worksheets
-    CurrentSheet = Sheet.Name
+    ' Filters for current code within loop
+    Sheets(Val_Wk_Array(1)).ListObjects("Unmapped_Table").Range.AutoFilter Field:=Unmapped_Col_Num_Array(10), _
+    Criteria1:=code, Operator:=xlAnd
 
-    If CurrentSheet = "Nomenclature - Patient Care" Then
-      Sheets(CurrentSheet).Select
-      ' Hides Concept Column
-      Columns(CS_72_Header_Ltr_Array(2)).EntireColumn.Hidden = True
-      ' Hides Source Column
-      ' Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
-      ' Hides Nomenclature Notes Column
-      Columns(CS_72_Header_Ltr_Array(15)).EntireColumn.Hidden = True
-      ' Hides Social History Notes Column
-      Columns(CS_72_Header_Ltr_Array(16)).EntireColumn.Hidden = True
-      ' Hides Grid Notes Column
-      Columns(CS_72_Header_Ltr_Array(17)).EntireColumn.Hidden = True
-      ' Hides Free Text Notes Column
-      Columns(CS_72_Header_Ltr_Array(18)).EntireColumn.Hidden = True
-      ' Hides Team Column
-      Columns(CS_72_Header_Ltr_Array(19)).EntireColumn.Hidden = True
-      ' Hides Internal Review Column
-      Columns(CS_72_Header_Ltr_Array(23)).EntireColumn.Hidden = True
+    ' Sets variable to the table on the active sheet.
+    Set tbl = Sheets(Val_Wk_Array(1)).ListObjects(1)
 
-    ElseIf CurrentSheet = "72" Then
-      Sheets(CurrentSheet).Select
-      ' Hides Concept Column
-      Columns(CS_72_Header_Ltr_Array(2)).EntireColumn.Hidden = True
-      ' Hides Source Column
-      ' Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
-      ' Hides Nomenclature Notes Column
-      Columns(CS_72_Header_Ltr_Array(15)).EntireColumn.Hidden = True
-      ' Hides Social History Notes Column
-      Columns(CS_72_Header_Ltr_Array(16)).EntireColumn.Hidden = True
-      ' Hides Grid Notes Column
-      Columns(CS_72_Header_Ltr_Array(17)).EntireColumn.Hidden = True
-      ' Hides Free Text Notes Column
-      Columns(CS_72_Header_Ltr_Array(18)).EntireColumn.Hidden = True
-      ' Hides Control Type Column
-      Columns(CS_72_Header_Ltr_Array(11)).EntireColumn.Hidden = True
-      ' Hides Task Assay Column
-      Columns(CS_72_Header_Ltr_Array(14)).EntireColumn.Hidden = True
-      ' Hides Team Column
-      Columns(CS_72_Header_Ltr_Array(19)).EntireColumn.Hidden = True
-      ' Hides Internal Review Column
-      Columns(CS_72_Header_Ltr_Array(23)).EntireColumn.Hidden = True
-      ' Hides NomenclatureID Column
-      Columns(CS_72_Header_Ltr_Array(12)).EntireColumn.Hidden = True
-      ' Hides Nomenclature Display Column
-      Columns(CS_72_Header_Ltr_Array(13)).EntireColumn.Hidden = True
+    If tbl.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+      Table_ObjIsVisible = True
+    Else
+      Table_ObjIsVisible = tbl.Range.SpecialCells(xlCellTypeVisible).Rows.Count > 1
     End If
-  Next Sheet
 
-  '
-  '  SUB - Aligns Index Sheet
-  '''''''''''''''''''''''
+    ' If data is visible then copy data.
+    If Table_ObjIsVisible = True Then
 
-  Sheets("INDEX SHEET").Select
-  Range("A2").Select
-  Range(Selection, Selection.End(xlDown)).Select
-  With Selection
-    .HorizontalAlignment = xlLeft
+      ' Finds the last row of the data sheet for copying
+      Sheets(Val_Wk_Array(1)).Select
+      LR = Range("A" & Rows.Count).End(xlUp).Row
+
+      ' Finds next blank row
+      Sheets(Code_Sheet).Select
+      Next_Blank_Row = Range("A" & Rows.Count).End(xlUp).Row + 1
+
+
+      With Sheets(Val_Wk_Array(1))
+
+        ' Copies the Registry Column
+        Range(Unmapped_Col_Ltr_Array(0) & "2:" & Unmapped_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(0) & Next_Blank_Row)
+
+        ' Copies the Measure Column
+        Range(Unmapped_Col_Ltr_Array(1) & "2:" & Unmapped_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(1) & Next_Blank_Row)
+
+        ' Copies the Concept Column
+        Range(Unmapped_Col_Ltr_Array(2) & "2:" & Unmapped_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(2) & Next_Blank_Row)
+
+        ' Copies the Source Column
+        Range(Unmapped_Col_Ltr_Array(3) & "2:" & Unmapped_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(3) & Next_Blank_Row)
+
+        ' Copies the Code System ID Column
+        Range(Unmapped_Col_Ltr_Array(4) & "2:" & Unmapped_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(4) & Next_Blank_Row)
+
+        ' Copies the Raw Code Column
+        Range(Unmapped_Col_Ltr_Array(5) & "2:" & Unmapped_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(8) & Next_Blank_Row)
+
+        ' Copies the Raw Code Display Column
+        Range(Unmapped_Col_Ltr_Array(6) & "2:" & Unmapped_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(9) & Next_Blank_Row)
+
+        ' Copies the Count Column
+        Range(Unmapped_Col_Ltr_Array(7) & "2:" & Unmapped_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(10) & Next_Blank_Row)
+
+        ' Copies the Notes Column
+        Range(Unmapped_Col_Ltr_Array(8) & "2:" & Unmapped_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(16) & Next_Blank_Row)
+
+        ' Copies the Team Column
+        Range(Unmapped_Col_Ltr_Array(9) & "2:" & Unmapped_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(15) & Next_Blank_Row)
+
+        ' Copies the Internal Review Source Column
+        Range(Unmapped_Col_Ltr_Array(11) & "2:" & Unmapped_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(Gen_Sht_Header_Ltr_Array(19) & Next_Blank_Row)
+
+      End With
+
+    End If
+
+  End If
+
+Next code
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' PRIMARY - Populates Nomenclature ID data onto the Nomenclature - PTCARE sheet
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Sheets(Val_Wk_Array(0)).Select
+'
+' ' Clears any extra filers
+' If Sheets(Val_Wk_Array(0)).FilterMode Then
+'   Sheets(Val_Wk_Array(0)).ShowAllData
+' End If
+'
+' 'Filters the clinical doc table by source and makes sure nomenclature ID
+' ' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(3), _
+' ' Criteria1:=Project_Name, Operator:=xlAnd
+'
+' ' Filters to make sure nomenclature ID is not blank
+' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(12), _
+' Criteria1:="<>"
+'
+' Sheets(Val_Wk_Array(0)).ListObjects("Clinical_Table").Range.AutoFilter Field:=Clin_Doc_Col_Num_Array(15), _
+' Criteria1:= _
+' "<>*This nomenclature is mapped but the associated event code is not mapped.*"
+'
+'
+' Set Table_Obj = ActiveSheet.ListObjects(1)
+'
+' 'Checks filtered table for visible data.
+' If Table_Obj.Range.SpecialCells(xlCellTypeVisible).Areas.Count > 1 Then
+'   Table_ObjIsVisible = True
+' Else
+'   Table_ObjIsVisible = False
+' End If
+'
+' ' If data is visible then copy data.
+' If Table_ObjIsVisible = True Then
+'   ' Check to see if Nomenclature - Patient Care sheet already exists
+'   For Each Sheet In Worksheets
+'     exists = False
+'     If Sheet.Name = "Nomenclature - Patient Care" Then
+'       exists = True
+'       Exit For
+'     End If
+'   Next Sheet
+'
+'   ' If sheet does NOT exist, then create the sheet and populate headers
+'   If exists = False Then
+'     ActiveWorkbook.Sheets.Add(After:=Worksheets(1)).Name = "Nomenclature - Patient Care"
+'
+'     ' Finds the last row of the Clinical Documentation Sheet for copy Range
+'     Sheets(Val_Wk_Array(0)).Select
+'     LR = Range("A" & Rows.Count).End(xlUp).Row
+'
+'     Code_Sheet = "Nomenclature - Patient Care"
+'
+'     ' Populates the headers on the PTCare sheet
+'     Off_Count = 0
+'     For i = 0 To UBound(CS_72_Header_Name_Array)
+'       Sheets(Code_Sheet).Range("A1").Offset(0, Off_Count).Value = CS_72_Header_Name_Array(i)
+'       Off_Count = Off_Count + 1
+'     Next i
+'   End If
+'
+'   ' Records the Addresses of the PTCare headers
+'   Sheets(Code_Sheet).Select
+'   Range("A1").Select
+'   Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+'
+'   For i = 0 To UBound(CS_72_Header_Num_Array)
+'     col_Count = 0
+'     For Each Header In Range("Header_row")
+'       col_Count = col_Count + 1
+'       If LCase(CS_72_Header_Num_Array(i)) = LCase(Header) Then
+'         CS_72_Header_Ltr_Array(i) = Mid(Header.Address, 2, 1)
+'         CS_72_Header_Num_Array(i) = col_Count
+'         Exit For
+'       End If
+'     Next Header
+'   Next i
+'
+'   Sheets(Val_Wk_Array(0)).Select
+'
+'   With Sheets(Val_Wk_Array(0))
+'     ' Copies Registry Column
+'     Range(Clin_Doc_Col_Ltr_Array(0) & "2:" & Clin_Doc_Col_Ltr_Array(0) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(0) & "2")
+'
+'     ' Copies Measure Column
+'     Range(Clin_Doc_Col_Ltr_Array(1) & "2:" & Clin_Doc_Col_Ltr_Array(1) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(1) & "2")
+'
+'     ' Copies Concept Column
+'     Range(Clin_Doc_Col_Ltr_Array(2) & "2:" & Clin_Doc_Col_Ltr_Array(2) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(2) & "2")
+'
+'     ' Copies Source Column
+'     Range(Clin_Doc_Col_Ltr_Array(3) & "2:" & Clin_Doc_Col_Ltr_Array(3) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(3) & "2")
+'
+'     ' Copies DocumentType Column
+'     Range(Clin_Doc_Col_Ltr_Array(4) & "2:" & Clin_Doc_Col_Ltr_Array(4) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(4) & "2")
+'
+'     ' Copies Name Column
+'     Range(Clin_Doc_Col_Ltr_Array(5) & "2:" & Clin_Doc_Col_Ltr_Array(5) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(5) & "2")
+'
+'     ' Copies Section Column
+'     Range(Clin_Doc_Col_Ltr_Array(6) & "2:" & Clin_Doc_Col_Ltr_Array(6) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(6) & "2")
+'
+'     ' Copies DTA Column
+'     Range(Clin_Doc_Col_Ltr_Array(7) & "2:" & Clin_Doc_Col_Ltr_Array(7) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(7) & "2")
+'
+'     ' Copies EventCode Column
+'     Range(Clin_Doc_Col_Ltr_Array(8) & "2:" & Clin_Doc_Col_Ltr_Array(8) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(8) & "2")
+'
+'     ' Copies EventDisplay Column
+'     Range(Clin_Doc_Col_Ltr_Array(9) & "2:" & Clin_Doc_Col_Ltr_Array(9) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(9) & "2")
+'
+'     ' Copies ESH Column
+'     Range(Clin_Doc_Col_Ltr_Array(10) & "2:" & Clin_Doc_Col_Ltr_Array(10) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(10) & "2")
+'
+'     ' Copies ControlType Column
+'     Range(Clin_Doc_Col_Ltr_Array(11) & "2:" & Clin_Doc_Col_Ltr_Array(11) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(11) & "2")
+'
+'     ' Copies NomenclatureID Column
+'     Range(Clin_Doc_Col_Ltr_Array(12) & "2:" & Clin_Doc_Col_Ltr_Array(12) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(12) & "2")
+'
+'     ' Copies Nomenclature Display Column
+'     Range(Clin_Doc_Col_Ltr_Array(13) & "2:" & Clin_Doc_Col_Ltr_Array(13) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(13) & "2")
+'
+'     ' Copies TaskAssay Column
+'     Range(Clin_Doc_Col_Ltr_Array(14) & "2:" & Clin_Doc_Col_Ltr_Array(14) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(14) & "2")
+'
+'     ' Copies the Nomenclature Notes Column
+'     Range(Clin_Doc_Col_Ltr_Array(15) & "2:" & Clin_Doc_Col_Ltr_Array(15) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(15) & "2")
+'
+'     ' Copies the Social History Notes Column
+'     Range(Clin_Doc_Col_Ltr_Array(16) & "2:" & Clin_Doc_Col_Ltr_Array(16) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(16) & "2")
+'
+'     ' Copies the Grid Notes Column
+'     Range(Clin_Doc_Col_Ltr_Array(17) & "2:" & Clin_Doc_Col_Ltr_Array(17) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(17) & "2")
+'
+'     ' Copies the Freetext Notes Column
+'     Range(Clin_Doc_Col_Ltr_Array(18) & "2:" & Clin_Doc_Col_Ltr_Array(18) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(18) & "2")
+'
+'     ' Copies the Team Column
+'     Range(Clin_Doc_Col_Ltr_Array(19) & "2:" & Clin_Doc_Col_Ltr_Array(19) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(19) & "2")
+'
+'     ' Copies the Internal Review Source Column
+'     Range(Clin_Doc_Col_Ltr_Array(20) & "2:" & Clin_Doc_Col_Ltr_Array(20) & LR).SpecialCells(xlCellTypeVisible).Copy Sheets(Code_Sheet).Range(CS_72_Header_Ltr_Array(23) & "2")
+'
+'   End With
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'   PRIMARY - Workbook Cleanup
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+' Deletes the extra sheets not needed
+Application.DisplayAlerts = False
+
+For Each Sheet In Worksheets
+  If Sheet.Name = "Unmapped Codes" _
+  Or Sheet.Name = "Health Maintenance Summary" _
+  Or Sheet.Name = "Clinical Documentation" _
+  Or Sheet.Name = "Source_Code_Systems" _
+  Or Sheet.Name = "Sheet1" _
+  Then
+    Sheet.Delete
+  End If
+Next Sheet
+
+Application.DisplayAlerts = True
+
+'
+' SUB - Creates and Populates Index Sheet
+'''''''''''''''''''''''''''''''''''''''''
+
+ActiveWorkbook.Sheets.Add(Before:=Worksheets(1)).Name = "Index Sheet"
+
+Range("A1").Select
+Selection.Value = "Index Sheet"
+ActiveCell.Offset(1, 0).Select
+
+For Each Sheet In Worksheets
+  If Sheet.Name <> "Index Sheet" Then
+    ActiveSheet.Hyperlinks.Add Anchor:=Selection, Address:="", SubAddress:="'" & Sheet.Name & "'" & "!A1", TextToDisplay:=Sheet.Name
+    ActiveCell.Offset(1, 0).Select
+  End If
+Next Sheet
+
+'
+' SUB - Formats remaining sheets as tables for appearance
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+For Each Sheet In Worksheets
+  Sheet.Activate
+
+  Set sht = Sheet
+  Set StartCell = Range("A1")
+
+  With sht
+    LastRow = .Range("A" & .Rows.Count).End(xlUp).Row
+    LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
+    Sheet_Name = Sheet.Name
   End With
-  Range("A2").Select
 
-  '
-  '  SUB - Saves the new workbook
-  ''''''''''''''''''''''''''''''''''''''
+  With sht.Range("A2:A" & LastRow)
+    If WorksheetFunction.CountBlank(.Cells) > 0 Then
+      .SpecialCells(xlCellTypeBlanks).EntireRow.Delete
+    End If
+  End With
 
-  ' Saves new workbook then Switches back to the validation form to begin next loop
-  Workbooks(Project_Name & "_PCST_File.xlsx").Close SaveChanges:=True
-  Windows(Validation_File_Name).Activate
+  sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
+
+  ' If User wants to clear all the formatting then clear all, else clear boarders
+  If ClearFormatting = True Then
+    Selection.ClearFormats
+  Else
+    Selection.Borders.LineStyle = xlNone
+  End If
+
+  Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
+  tbl.Name = Sheet_Name
+  tbl.TableStyle = "TableStyleLight9"
+  Columns.AutoFit
+  Range("A1").Select
+
+  ' Clears all data validation which could be copied
+  Sheet.Cells.Validation.Delete
+
+Next Sheet
+
+' SUB - Highlights Important Columns on Nomenclature Sheet
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+For Each Sheet In Worksheets
+  CurrentSheet = Sheet.Name
+
+  ' Highlights 72 and Nomenclature Columns
+  If CurrentSheet = "Nomenclature - Patient Care" Then
+    Sheets(CurrentSheet).Select
+    LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+    ' Selects DTA Column
+    Range(CS_72_Header_Ltr_Array(7) & "2:" & CS_72_Header_Ltr_Array(7) & LastRow).Interior.Color = 16764108
+    ' Colors the Nom Id Column
+    Range(CS_72_Header_Ltr_Array(12) & "2:" & CS_72_Header_Ltr_Array(12) & LastRow).Interior.Color = 16764108
+    ' Colors the Nom Display Column
+    Range(CS_72_Header_Ltr_Array(13) & "2:" & CS_72_Header_Ltr_Array(13) & LastRow).Interior.Color = 16764108
+
+  ElseIf CurrentSheet = "72" Then
+    Sheets(CurrentSheet).Select
+    LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+    ' Colors Event Code Column
+    Range(CS_72_Header_Ltr_Array(8) & "2:" & CS_72_Header_Ltr_Array(8) & LastRow).Interior.Color = 16764108
+    ' Colors Event Code Display Column
+    Range(CS_72_Header_Ltr_Array(9) & "2:" & CS_72_Header_Ltr_Array(9) & LastRow).Interior.Color = 16764108
+  End If
+
+Next Sheet
+
+' SUB - Hides Extra Columns
+'''''''''''''''''''''''''''''
+For Each Sheet In Worksheets
+  CurrentSheet = Sheet.Name
+
+  If CurrentSheet = "Nomenclature - Patient Care" Then
+    Sheets(CurrentSheet).Select
+    ' Hides Concept Column
+    Columns(CS_72_Header_Ltr_Array(2)).EntireColumn.Hidden = True
+    ' Hides Source Column
+    ' Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
+    ' Hides Nomenclature Notes Column
+    Columns(CS_72_Header_Ltr_Array(15)).EntireColumn.Hidden = True
+    ' Hides Social History Notes Column
+    Columns(CS_72_Header_Ltr_Array(16)).EntireColumn.Hidden = True
+    ' Hides Grid Notes Column
+    Columns(CS_72_Header_Ltr_Array(17)).EntireColumn.Hidden = True
+    ' Hides Free Text Notes Column
+    Columns(CS_72_Header_Ltr_Array(18)).EntireColumn.Hidden = True
+    ' Hides Team Column
+    Columns(CS_72_Header_Ltr_Array(19)).EntireColumn.Hidden = True
+    ' Hides Internal Review Column
+    Columns(CS_72_Header_Ltr_Array(23)).EntireColumn.Hidden = True
+
+  ElseIf CurrentSheet = "72" Then
+    Sheets(CurrentSheet).Select
+    ' Hides Concept Column
+    Columns(CS_72_Header_Ltr_Array(2)).EntireColumn.Hidden = True
+    ' Hides Source Column
+    ' Columns(CS_72_Header_Ltr_Array(3)).EntireColumn.Hidden = True
+    ' Hides Nomenclature Notes Column
+    Columns(CS_72_Header_Ltr_Array(15)).EntireColumn.Hidden = True
+    ' Hides Social History Notes Column
+    Columns(CS_72_Header_Ltr_Array(16)).EntireColumn.Hidden = True
+    ' Hides Grid Notes Column
+    Columns(CS_72_Header_Ltr_Array(17)).EntireColumn.Hidden = True
+    ' Hides Free Text Notes Column
+    Columns(CS_72_Header_Ltr_Array(18)).EntireColumn.Hidden = True
+    ' Hides Control Type Column
+    Columns(CS_72_Header_Ltr_Array(11)).EntireColumn.Hidden = True
+    ' Hides Task Assay Column
+    Columns(CS_72_Header_Ltr_Array(14)).EntireColumn.Hidden = True
+    ' Hides Team Column
+    Columns(CS_72_Header_Ltr_Array(19)).EntireColumn.Hidden = True
+    ' Hides Internal Review Column
+    Columns(CS_72_Header_Ltr_Array(23)).EntireColumn.Hidden = True
+    ' Hides NomenclatureID Column
+    Columns(CS_72_Header_Ltr_Array(12)).EntireColumn.Hidden = True
+    ' Hides Nomenclature Display Column
+    Columns(CS_72_Header_Ltr_Array(13)).EntireColumn.Hidden = True
+  End If
+Next Sheet
+
+'
+'  SUB - Aligns Index Sheet
+'''''''''''''''''''''''
+
+Sheets("INDEX SHEET").Select
+Range("A2").Select
+Range(Selection, Selection.End(xlDown)).Select
+With Selection
+  .HorizontalAlignment = xlLeft
+End With
+Range("A2").Select
+
+'
+'  SUB - Saves the new workbook
+''''''''''''''''''''''''''''''''''''''
+
+' Saves new workbook then Switches back to the validation form to begin next loop
+Workbooks(Project_Name & "_PCST_File.xlsx").Close SaveChanges:=True
+Windows(Validation_File_Name).Activate
 
 
 ' Exiting program after completion
