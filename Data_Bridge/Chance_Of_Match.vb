@@ -8,7 +8,7 @@ Sub get_data()
     Application.DisplayAlerts = False
 
     For Each Sheet In Worksheets
-        If Sheet.Name = "ExclusionRules" Then
+        If Sheet.Name = "Previously_Mapped" Then
             Sheet.Delete
         End If
     Next Sheet
@@ -16,10 +16,10 @@ Sub get_data()
     Application.DisplayAlerts = True
 
     With ThisWorkbook
-        .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "ExclusionRules"
+        .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "Previously_Mapped"
     End With
 
-    With Sheets("ExclusionRules").ListObjects.Add(SourceType:=0, Source:=Array( _
+    With Sheets("Previously_Mapped").ListObjects.Add(SourceType:=0, Source:=Array( _
         "OLEDB;Provider=Microsoft.ACE.OLEDB.12.0;Password="""";User ID=Admin;Data Source=Y:\Data Intelligence\Code_Database\Data_Intelligence_Cod" _
         , _
         "e_Database.accdb;Mode=Share Deny Write;Extended Properties="""";Jet OLEDB:System database="""";Jet OLEDB:Registry Path="""";Jet OLEDB:" _
@@ -33,10 +33,10 @@ Sub get_data()
         "port Complex Data=False;Jet OLEDB:Bypass UserInfo Validation=False;Jet OLEDB:Limited DB Caching=False;Jet OLEDB:Bypass ChoiceFie" _
         , "ld Validation=False"), Destination:=Range("$A$1")).QueryTable
         .CommandType = xlCmdTable
-      .CommandText = Array("PCSTExclusionRules")
+      .CommandText = Array("Q_PCST_All_Validated_CS72")
       .SourceDataFile = _
       "Y:\Data Intelligence\Code_Database\Data_Intelligence_Code_Database.accdb"
-      .ListObject.DisplayName = "ExclusionRules"
+      .ListObject.DisplayName = "Previously_Mapped"
       .Refresh BackgroundQuery:=False
     End With
 End Sub
