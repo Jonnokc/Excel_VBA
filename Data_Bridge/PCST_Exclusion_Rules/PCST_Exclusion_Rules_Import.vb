@@ -24,19 +24,19 @@ Sub get_data()
         , _
         "e_Database.accdb;Mode=Share Deny Write;Extended Properties="""";Jet OLEDB:System database="""";Jet OLEDB:Registry Path="""";Jet OLEDB:" _
         , _
-        "Database Password=BORIS;Jet OLEDB:Engine Type=6;Jet OLEDB:Database Locking Mode=0;Jet OLEDB:Global Partial Bulk Ops=2;Jet OLEDB:Glo" _
+        "Database Password=BORIS;Jet OLEDB:Engine Type=6;Jet OLEDB:Database Locking Mode=0;Jet OLEDB:Global Partial Bulk Ops=2;Jet OLEDB:" _
         , _
-        "bal Bulk Transactions=1;Jet OLEDB:New Database Password="""";Jet OLEDB:Create System Database=False;Jet OLEDB:Encrypt Database=Fal" _
+        "Global Bulk Transactions=1;Jet OLEDB:New Database Password="""";Jet OLEDB:Create System Database=False;Jet OLEDB:Encrypt Database=" _
         , _
-        "se;Jet OLEDB:Don't Copy Locale on Compact=False;Jet OLEDB:Compact Without Replica Repair=False;Jet OLEDB:SFP=False;Jet OLEDB:Sup" _
+        "False;Jet OLEDB:Don't Copy Locale on Compact=False;Jet OLEDB:Compact Without Replica Repair=False;Jet OLEDB:SFP=False;Jet OLEDB:" _
         , _
-        "port Complex Data=False;Jet OLEDB:Bypass UserInfo Validation=False;Jet OLEDB:Limited DB Caching=False;Jet OLEDB:Bypass ChoiceFie" _
-        , "ld Validation=False"), Destination:=Range("$A$1")).QueryTable
+        "Support Complex Data=False;Jet OLEDB:Bypass UserInfo Validation=False;Jet OLEDB:Limited DB Caching=False;Jet OLEDB:Bypass Choice" _
+        , "Field Validation=False"), Destination:=Range("$A$1")).QueryTable
         .CommandType = xlCmdTable
       .CommandText = Array("PCSTExclusionRules")
       .SourceDataFile = _
       "Y:\Data Intelligence\Code_Database\Data_Intelligence_Code_Database.accdb"
-      .ListObject.DisplayName = "ExclusionRules"
+      .ListObject.DisplayName = "Table_Data_Intelligence_Code_Database.accdb"
       .Refresh BackgroundQuery:=False
     End With
 End Sub

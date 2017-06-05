@@ -58,7 +58,7 @@ Private Sub Summary_Combined_Lookup_Sheet()
     Application.Calculation = xlCalculationManual
     Application.EnableEvents = False
 
-    WkNames = Array("Potential Mapping Issues", "Unmapped Codes")
+    WkNames = Array("Potential Mapping Issues", "Unmapped Codes", "Clinical Documentation")
     HeaderNames = Array("Registry", "Measure", "Concept", "Concat", "Potential_Lookup", "Unmapped_Lookup", "Clinical_Lookup")
 
     'Loops through all worksheets and checks the worksheet names for a match against the array.
@@ -116,8 +116,8 @@ Private Sub Summary_Combined_Lookup_Sheet()
         CurrentWk = WkNames(i)
 
         Sheets(CurrentWk).Select
-        Range("A3:B3").Select
-        Range(Selection, Selection.End(xlDown)).Select
+        LR = Range("A" & Rows.Count).End(xlUp).Row
+        Range("A3" & ":B" & LR).SpecialCells(xlCellTypeVisible).Select
         Selection.Copy
 
         Sheets("Combined Registry Measures").Select
@@ -134,6 +134,22 @@ Private Sub Summary_Combined_Lookup_Sheet()
     Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
     tbl.Name = "combined_lookup_range"
     tbl.TableStyle = "TableStyleLight12"
+
+    ' Sorts the Table into Registry -> Measure Order
+    ActiveWorkbook.Worksheets("Combined Registry Measures").ListObjects("combined_lookup_range").Sort. _
+        SortFields.Add Key:=Range("A2:A" & Next_Blank_Row - 1), SortOn:=xlSortOnValues, Order:= _
+        xlAscending, DataOption:=xlSortNormal
+    ActiveWorkbook.Worksheets("Combined Registry Measures").ListObjects("combined_lookup_range").Sort. _
+        SortFields.Add Key:=Range("B2:B" & Next_Blank_Row - 1), SortOn:=xlSortOnValues, Order:= _
+        xlAscending, DataOption:=xlSortNormal
+    With ActiveWorkbook.Worksheets("Combined Registry Measures").ListObjects("combined_lookup_range"). _
+        Sort
+        .Header = xlYes
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
 
 
     ActiveSheet.Range("combined_lookup_range[#All]").RemoveDuplicates Columns:=Array(1, 2), Header:=xlYes
