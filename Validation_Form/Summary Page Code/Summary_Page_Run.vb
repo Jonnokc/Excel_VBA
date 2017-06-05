@@ -386,13 +386,6 @@ Private Sub Summary_Pop_Dots()
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
-        .WrapText = False
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
     End With
 
     ' Refreshes pivot table data
@@ -495,39 +488,32 @@ Private Sub Summary_Pop_Dots()
 
         ' IMPORTANT - Removing conditional formatting for the time being per new file format
         '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-            ' Range(SummaryColumns(i) & "2").Select
-            ' Range(Selection, Selection.End(xlDown)).Select
-            ' Application.CutCopyMode = False
-            ' Selection.FormatConditions.AddIconSetCondition
-            ' Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-            ' With Selection.FormatConditions(1)
-            '     .ReverseOrder = True
-            '     .ShowIconOnly = True
-            '     .IconSet = ActiveWorkbook.IconSets(xl3TrafficLights1)
-            ' End With
-            '
-            ' With Selection.FormatConditions(1).IconCriteria(2)
-            '     .Type = xlConditionValueNumber
-            '     .Value = 1
-            '     .Operator = 7
-            ' End With
-            '
-            ' With Selection.FormatConditions(1).IconCriteria(3)
-            '     .Type = xlConditionValueNumber
-            '     .Value = 4
-            '     .Operator = 7
-            ' End With
+            Range(SummaryColumns(i) & "2").Select
+            Range(Selection, Selection.End(xlDown)).Select
+            Application.CutCopyMode = False
+            Selection.FormatConditions.AddIconSetCondition
+            Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+            With Selection.FormatConditions(1)
+                .ReverseOrder = True
+                .ShowIconOnly = True
+                .IconSet = ActiveWorkbook.IconSets(xl3TrafficLights1)
+            End With
+
+            With Selection.FormatConditions(1).IconCriteria(2)
+                .Type = xlConditionValueNumber
+                .Value = 1
+                .Operator = 7
+            End With
+
+            With Selection.FormatConditions(1).IconCriteria(3)
+                .Type = xlConditionValueNumber
+                .Value = 4
+                .Operator = 7
+            End With
 
             With Selection
                 .HorizontalAlignment = xlCenter
                 .VerticalAlignment = xlBottom
-                .WrapText = False
-                .Orientation = 0
-                .AddIndent = False
-                .IndentLevel = 0
-                .ShrinkToFit = False
-                .ReadingOrder = xlContext
-                .MergeCells = False
             End With
 
         End If
@@ -559,12 +545,7 @@ Private Sub Summary_Pop_Dots()
 
     With Selection
         .VerticalAlignment = xlBottom
-        .WrapText = False
         .Orientation = 45
-        .AddIndent = False
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
     End With
 
     ' Autofit for all cells on screen.
@@ -573,6 +554,14 @@ Private Sub Summary_Pop_Dots()
 
     ' Cleans up selected cells on sheet.
     Range("A1").Select
+
+    ' Aligns Registry and Measure Columns
+    Sheets("Summary View").Select
+    Columns("A:C").Select
+    With Selection
+        .HorizontalAlignment = xlLeft
+        .VerticalAlignment = xlBottom
+    End With
 
     ' Re-enables previously disabled settings after all code has run.
     Application.ScreenUpdating = True
