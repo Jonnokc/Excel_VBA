@@ -1,4 +1,4 @@
-Sub PrevCodeCheckBridge()
+Sub PrevCodeSubCheck()
 
   Dim sheet As Worksheet
   Dim fso As Object
