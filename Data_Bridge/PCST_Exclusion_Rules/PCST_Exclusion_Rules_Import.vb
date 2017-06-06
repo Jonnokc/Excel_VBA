@@ -8,7 +8,7 @@ Sub get_PCST_Exclusion_Rules()
     Application.DisplayAlerts = False
 
     For Each Sheet In Worksheets
-        If Sheet.Name = "ExclusionRules" Then
+        If Sheet.Name = "PCST_Exclusion_Rules" Then
             Sheet.Delete
         End If
     Next Sheet
@@ -16,10 +16,10 @@ Sub get_PCST_Exclusion_Rules()
     Application.DisplayAlerts = True
 
     With ThisWorkbook
-        .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "ExclusionRules"
+        .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "PCST_Exclusion_Rules"
     End With
 
-    With Sheets("ExclusionRules").ListObjects.Add(SourceType:=0, Source:=Array( _
+    With Sheets("PCST_Exclusion_Rules").ListObjects.Add(SourceType:=0, Source:=Array( _
         "OLEDB;Provider=Microsoft.ACE.OLEDB.12.0;Password="""";User ID=Admin;Data Source=Y:\Data Intelligence\Code_Database\Data_Intelligence_Cod" _
         , _
         "e_Database.accdb;Mode=Share Deny Write;Extended Properties="""";Jet OLEDB:System database="""";Jet OLEDB:Registry Path="""";Jet OLEDB:" _
@@ -39,4 +39,7 @@ Sub get_PCST_Exclusion_Rules()
       .ListObject.DisplayName = "Table_Data_Intelligence_Code_Database.accdb"
       .Refresh BackgroundQuery:=False
     End With
+
+    ' Breaks the link so the database isn't locked in read only.
+    Sheets("PCST_Exclusion_Rules").ListObjects("Table_Data_Intelligence_Code_Database.accdb").Unlink
 End Sub
