@@ -286,6 +286,22 @@ CodeSystemCheckHeaders = Array("UnmappedLookup")
             End If
         Next sheet
 
+        ' Deletes the Code Lookup column
+
+        Sheets(SheetArray(0)).Select
+        Range("A1:A2").Select
+        Range(Selection, Selection.End(xlToRight)).Name = "Header_row"
+
+
+        ' Checks if header CodeLookup already exists. If it finds a hit, delete that column and start again.
+
+        For Each Header In Range("Header_row")
+          If InStr(1, Header, "CodeLookup") Then
+            Header.EntireColumn.Delete
+          End If
+        Next Header
+
+
         Application.DisplayAlerts = True
 
         ' Tells user program is completed
