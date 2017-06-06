@@ -93,6 +93,8 @@ Dim sResult_Value As Variant
     ' "=CONCATENATE(" & Client_Mnemonic & "," & "|" & "," & HeaderLocations(0) & "2," & "|" & "," & HeaderLocations(1) & "3)"
     ' "=CONCATENATE(" & Client_Mnemonic & "," & "|" & "," & HeaderLocations(0) & "2" & "," & "|" & "," & HeaderLocations(1) & "2)"
 
+            Range(UnmappedHeaderLocations(3) & "2:" & UnmappedHeaderLocations(3) & LR).Formula = "=CONCATENATE(" & CHR(34) & Client_Mnemonic & CHR(34) & "," & CHR(34) & "|" & CHR(34) & "," & UnmappedHeaderLocations(0) & "2" & ")"
+
 =CONCATENATE("CERN_PH","|",F2, "|",E2)
 
     ' SUB - Assigns CodeLookup Column to an array in memory

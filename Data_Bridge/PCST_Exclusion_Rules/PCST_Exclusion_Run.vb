@@ -23,6 +23,7 @@ Sub PCST_Exclusion_Run_Checker()
   End With
   If Path_Checker = 0 Then
     MsgBox ("You have not mapped the shared network drive correctly for this program to run. Please check the wiki for instructions on how to map the network drive.")
+    Goto User_Exit
   Else
     ' Do Nothing
   End If
@@ -85,6 +86,9 @@ Sub PCST_Exclusion_Run_Checker()
     SheetName = FirstSheet
   Else
     SheetName = InputBox("Please enter the name of the sheet containing the data you want to review")
+    If SheetName = vbNullString Then
+        GoTo User_Exit
+    End If
   End If
 
   Sheets(SheetName).Select
@@ -107,6 +111,11 @@ Sub PCST_Exclusion_Run_Checker()
   Else
     RawCodeColumn = InputBox("What is the column letter of the column you want to check?")
     RawCodeColumn = UCase(RawCodeColumn)
+
+    ' If user doesnt enter a letter quit the program.
+    If RawCodeColumn = vbNullString Then
+        GoTo User_Exit
+    End If
   End If
 
 
@@ -145,7 +154,7 @@ BeginAgain:
       End If
     Next Header
 
-    ' Names Exclusion Check Results Range
+    ' Names The Column
     NextBlank = Mid(Cells(2, Columns.Count).End(xlToLeft).Offset(0, 1).Address, 2, 1)
     Range(NextBlank & "1") = "Exclusion Check Results"
 
@@ -184,5 +193,8 @@ BeginAgain:
 
 
   MsgBox ("BORIS is done! Check the new column 'Exclusion Check Results'. Rows with Violations were marked. Blank means no violation was found.")
+
+  User_Exit:
+      MsgBox ("Exiting per user action")
 
 End Sub
