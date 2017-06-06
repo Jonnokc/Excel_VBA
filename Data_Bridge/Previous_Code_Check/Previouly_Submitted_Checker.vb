@@ -130,6 +130,7 @@ CodeSystemCheckHeaders = Array("UnmappedLookup")
           SheetName = InputBox("Please enter the name of the sheet containing the data you want to review")
           If SheetName = vbNullString Then
               GoTo User_Exit
+          End If
         End If
 
         ' Stores the Name of the data sheet in the Array
