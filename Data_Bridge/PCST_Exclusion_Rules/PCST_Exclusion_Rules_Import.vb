@@ -1,4 +1,4 @@
-Sub get_data()
+Sub get_PCST_Exclusion_Rules()
 '
 ' get_data Macro
 '
@@ -16,7 +16,7 @@ Sub get_data()
     Application.DisplayAlerts = True
 
     With ThisWorkbook
-        .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "ExclusionRules"
+        .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "EsxclusionRules"
     End With
 
     With Sheets("ExclusionRules").ListObjects.Add(SourceType:=0, Source:=Array( _
