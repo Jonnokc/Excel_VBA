@@ -11,6 +11,11 @@ Sub PCST_Exclusion_Run_Checker()
 
   MsgBox ("PCST Exclusion Rules Checker Is About to Run. Please follow on screen prompts if any. Otherwise leave computer alone until BORIS is done.")
 
+  'This disables settings to improve macro performance.
+  Application.ScreenUpdating = False
+  Application.Calculation = xlCalculationManual
+  Application.EnableEvents = False
+
 
   ' PRIMARY - Imports the Exclusion Rules
   '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -191,8 +196,15 @@ BeginAgain:
   Sheets("PCST_Exclusion_Rules").Delete
   Application.DisplayAlerts = True
 
+  'Re-enables previously disabled settings after all code has run.
+  Application.ScreenUpdating = True
+  Application.Calculation = xlCalculationAutomatic
+  Application.EnableEvents = True
+
 
   MsgBox ("BORIS is done! Check the new column 'Exclusion Check Results'. Rows with Violations were marked. Blank means no violation was found.")
+
+  Exit Sub
 
   User_Exit:
       MsgBox ("Exiting per user action")
