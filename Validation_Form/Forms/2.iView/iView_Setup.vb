@@ -74,9 +74,6 @@ Sub iView_Setup()
     Set sht = Worksheets("IView Results")
     Set StartCell = Range("A1")
 
-    'Refresh UsedRange
-    Worksheets("IView Results").UsedRange
-
     'Find Last Row and Column
     LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
     LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
