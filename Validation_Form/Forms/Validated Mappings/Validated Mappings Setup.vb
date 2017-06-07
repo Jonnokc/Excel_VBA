@@ -103,13 +103,6 @@ Sub Validated_Mappings_Setup()
 
   sht.Range(StartCell, sht.Cells(LastRow, LastColumn)).Select
 
-  ' If User wants to clear all the formatting then clear all, else clear boarders
-  If ClearFormatting = True Then
-    Selection.ClearFormats
-  Else
-    Selection.Borders.LineStyle = xlNone
-  End If
-
   Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
   tbl.Name = "Combined_Table"
   tbl.TableStyle = "TableStyleLight9"
@@ -201,7 +194,6 @@ Sub Validated_Mappings_Setup()
   End With
 
   ' Pastes the copied data into the Validated_To_Review Sheet
-
   With Sheets("Validated_To_Review")
     .Range("A1").PasteSpecial Paste:=xlPasteValues
   End With

@@ -9,9 +9,6 @@ Sub DynamicRange()
     Set sht = Worksheets("Sheet1")
     Set StartCell = Range("D9")
 
-    'Refresh UsedRange
-    Worksheets("Sheet1").UsedRange
-
     'Find Last Row and Column
     LastRow = StartCell.SpecialCells(xlCellTypeLastCell).Row
     LastColumn = StartCell.SpecialCells(xlCellTypeLastCell).Column
