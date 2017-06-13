@@ -104,12 +104,11 @@ Sub PCST_Exclusion_Run_Checker()
   For Each Header In Range("Header_row")
     Header_Finder = False
     If Header.Value = "Raw Code Display" Then
+      RawCodeColumn = MsgBox("BORIS Found the header 'Raw Code Display' Is this the column you want to check?", vbYesNo)
       Header_Location = Mid(Header.Address, 2, 1)
       Exit For
     End If
   Next Header
-
-  RawCodeColumn = MsgBox("BORIS Found the header 'Raw Code Display' Is this the column you want to check?", vbYesNo)
 
   If RawCodeColumn = vbYes Then
     RawCodeColumn = Header_Location

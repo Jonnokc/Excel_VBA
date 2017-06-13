@@ -15,7 +15,7 @@ Sub Validation_Format()
 
     MsgBox ("Program is about to run. Please leave computer alone until completed")
 
-    Sheets("Validated Codes").Select    'Selects Sheet
+    Sheets("Validated Mappings").Select    'Selects Sheet
     ActiveSheet.AutoFilterMode = False
 
     'If table exists on this sheet, then convert to range
@@ -49,7 +49,7 @@ Sub Validation_Format()
 
     'Removes extra formatting of cells and standardizes all cells in the same format then formats 'range as table.
 
-    Sheets("Validation Format").Select
+    Sheets("Validated Results").Select
     Cells.Select
     Selection.Style = "Normal"
     ActiveSheet.AutoFilterMode = False    'Turns off autofilter
@@ -96,7 +96,7 @@ Sub Validation_Format()
 
     Range("A2").Select
     ActiveCell = _
-    "=IFERROR(INDEX('Validated Codes'!I:I,MATCH(E2,'Validated Codes'!D:D,0)),0)"
+    "=IFERROR(INDEX('Validated Mappings'!I:I,MATCH(E2,'Validated Mappings'!D:D,0)),0)"
     Selection.AutoFill Destination:=Range("Forms_Val[Mapped?]")
 
     'Re-enables calculations
