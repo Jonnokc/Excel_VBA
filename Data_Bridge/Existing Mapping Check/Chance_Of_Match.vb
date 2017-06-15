@@ -33,7 +33,7 @@ Sub get_data()
         "port Complex Data=False;Jet OLEDB:Bypass UserInfo Validation=False;Jet OLEDB:Limited DB Caching=False;Jet OLEDB:Bypass ChoiceFie" _
         , "ld Validation=False"), Destination:=Range("$A$1")).QueryTable
         .CommandType = xlCmdTable
-      .CommandText = Array("Q_PCST_All_Validated_CS72")
+      .CommandText = Array("Q_CS72_All_Validated")
       .SourceDataFile = _
       "Y:\Data Intelligence\Code_Database\Data_Intelligence_Code_Database.accdb"
       .ListObject.DisplayName = "Previously_Mapped"
