@@ -31,10 +31,10 @@ Sub PrevCodeSubCheck()
   Application.Calculation = xlCalculationManual
   Application.EnableEvents = False
 
-  SheetArray = Array("Unmapped Raw", "CodeSystemCheck")
+  SheetArray = Array("Unmapped Codes", "PreviouslySubChck")
   UnmappedHeaderLocations = Array("Coding System ID", "Raw Code ID", "EvCodeCheck", "CodeLookup")
   HeaderNames = Array("Coding System ID", "Raw Code", "EvCodeCheck")
-  CodeSystemCheckHeaders = Array("UnmappedLookup")
+  PreviouslySubChckHeaders = Array("UnmappedLookup")
 
 
 
@@ -56,12 +56,12 @@ Sub PrevCodeSubCheck()
     ' Do Nothing
   End If
   Set fso = Nothing
-  ' Checks to see if the CodeSystemCheck Sheet already exists.
+  ' Checks to see if the PreviouslySubChck Sheet already exists.
 
   Application.DisplayAlerts = False
 
   For Each sheet In Worksheets
-    If sheet.Name = "CodeSystemCheck" Then
+    If sheet.Name = "PreviouslySubChck" Then
       sheet.Delete
     End If
   Next sheet
@@ -69,14 +69,14 @@ Sub PrevCodeSubCheck()
   Application.DisplayAlerts = True
 
   With ThisWorkbook
-    .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "CodeSystemCheck"
+    .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = "PreviouslySubChck"
   End With
 
 
   ' PRIMARY - Imports the previously reviewed unmapped
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-  With Sheets("CodeSystemCheck").ListObjects.Add(SourceType:=0, Source:=Array( _
+  With Sheets("PreviouslySubChck").ListObjects.Add(SourceType:=0, Source:=Array( _
   "OLEDB;Provider=Microsoft.ACE.OLEDB.12.0;Password="""";User ID=Admin;Data Source=Y:\Data Intelligence\Code_Database\Data_Intelligence_Cod" _
   , _
   "e_Database.accdb;Mode=Share Deny Write;Extended Properties="""";Jet OLEDB:System database="""";Jet OLEDB:Registry Path="""";Jet OLEDB:" _
@@ -99,7 +99,7 @@ Sub PrevCodeSubCheck()
 
 
   ' Breaks the link so the database isn't locked in read only.
-  Sheets("CodeSystemCheck").ListObjects("Table_Data_Intelligence_Code_Database.accdb").Unlink
+  Sheets("PreviouslySubChck").ListObjects("Table_Data_Intelligence_Code_Database.accdb").Unlink
 
 
   ' SUB - Finds the column for the code system ID on the unmapped codes Sheet
@@ -108,7 +108,7 @@ Sub PrevCodeSubCheck()
   ' SUB - Prompts user for current client mnemonic id
   Client_Mnemonic = InputBox("What is the full client mnemonic for this client?" & vbNewLine & vbNewLine & "ex. CERN_PH")
 
-  If Client_Mnemonic = vbCancel Then
+  If Client_Mnemonic = vbCancel or Client_Mnemonic = vbNullString Then
     GoTo User_Exit
   End If
 
@@ -139,12 +139,12 @@ Sub PrevCodeSubCheck()
   End If
 
   ' Stores the Name of the data sheet in the Array
-  SheetArray(0) = SheetName
+  FirstSheet = SheetName
 
 
   ' SUB - Checks if there already is a column titled EVCodeCheck, and code Check. If Not then Create them.
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  Sheets(SheetArray(0)).Select
+  Sheets(FirstSheet).Select
   Range("A1:A2").Select
   Range(Selection, Selection.End(xlToRight)).Name = "Header_row"
 
@@ -179,7 +179,7 @@ BeginAgain2:
   ' SUB - FINDS THE COLUMN LOCATIONS OF THE RAW DATA Sheet
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   ' Confirms header range.
-  Sheets(SheetArray(0)).Select
+  Sheets(FirstSheet).Select
   Range("A1:A2").Select
   Range(Selection, Selection.End(xlToRight)).Name = "Header_row"
 
@@ -197,7 +197,7 @@ BeginAgain2:
 
     ' If no header was found then prompt the user for the column or allow the user to cancel the program
     If Header_Check = False Then
-      Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & HeaderNames(i) & " on the " & SheetArray(0) & " Sheet." & vbNewLine & vbNewLine & "BORIS needs your help. Please enter the letter of the missing column.", "If I am BORIS who are you?")
+      Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & HeaderNames(i) & " on the " & FirstSheet & " Sheet." & vbNewLine & vbNewLine & "BORIS needs your help. Please enter the letter of the missing column.", "If I am BORIS who are you?")
       If Header_User_Response = vbNullString Then
         GoTo User_Exit
       Else
@@ -206,19 +206,19 @@ BeginAgain2:
     End If
   Next i
 
-  ' SUB - Finds the Unmapped Lookup Header on the CodeSystemCheck SheetArray
+  ' SUB - Finds the Unmapped Lookup Header on the PreviouslySubChck SheetArray
 
   Sheets(SheetArray(1)).Select
   Range("A1").Select
   Range(Selection, Selection.End(xlToRight)).Name = "Header_row"
 
-  For i = 0 To UBound(CodeSystemCheckHeaders)
+  For i = 0 To UBound(PreviouslySubChckHeaders)
 
     ' Finds columns by header name
     Header_Check = False
     For Each Header In Range("Header_row")
-      If LCase(CodeSystemCheckHeaders(i)) = LCase(Header) Then
-        CodeSystemCheckHeaders(i) = Mid(Header.Address, 2, 1)
+      If LCase(PreviouslySubChckHeaders(i)) = LCase(Header) Then
+        PreviouslySubChckHeaders(i) = Mid(Header.Address, 2, 1)
         Header_Check = True
         Exit For
       End If
@@ -226,11 +226,11 @@ BeginAgain2:
 
     ' If no header was found then prompt the user for the column or allow the user to cancel the program
     If Header_Check = False Then
-      Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & CodeSystemCheckHeaders(i) & " on the " & SheetArray(1) & " Sheet." & vbNewLine & vbNewLine & "BORIS needs your help. Please enter the letter of the missing column.", "If I am BORIS who are you?")
+      Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & PreviouslySubChckHeaders(i) & " on the " & SheetArray(1) & " Sheet." & vbNewLine & vbNewLine & "BORIS needs your help. Please enter the letter of the missing column.", "If I am BORIS who are you?")
       If Header_User_Response = vbNullString Then
         GoTo User_Exit
       Else
-        CodeSystemCheckHeaders(i) = UCase(Header_User_Response)
+        PreviouslySubChckHeaders(i) = UCase(Header_User_Response)
       End If
     End If
   Next i
@@ -238,21 +238,21 @@ BeginAgain2:
 
 
   ' SUB - Creates Concat Column
-  Sheets(SheetArray(0)).Select
+  Sheets(FirstSheet).Select
   LR = Range(UnmappedHeaderLocations(0) & Rows.Count).End(xlUp).Row
   Range(UnmappedHeaderLocations(3) & "2:" & UnmappedHeaderLocations(3) & LR).Formula = "=CONCATENATE(" & Chr(34) & Client_Mnemonic & Chr(34) & "," & Chr(34) & "|" & Chr(34) & "," & UnmappedHeaderLocations(0) & "2" & "," & Chr(34) & "|" & Chr(34) & "," & UnmappedHeaderLocations(1) & "2" & ")"
 
 
   ' SUB - Assigns CodeLookup Column to an array in memory
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  Sheets(SheetArray(0)).Select
+  Sheets(FirstSheet).Select
   LR = Range(UnmappedHeaderLocations(0) & Rows.Count).End(xlUp).Row
   Range(UnmappedHeaderLocations(3) & "2:" & UnmappedHeaderLocations(3) & LR).SpecialCells(xlCellTypeVisible).Name = "CodeLookup"
 
   EVCodeCheckArray = Range("CodeLookup").Value
 
   ' SUB - Set EvCodeCheck answer range to array in memory
-  Sheets(SheetArray(0)).Select
+  Sheets(FirstSheet).Select
   Range(UnmappedHeaderLocations(2) & "2:" & UnmappedHeaderLocations(2) & LR).SpecialCells(xlCellTypeVisible).Name = "EvCodeCheck"
 
   EvCodeCheckAnswerArray = Range("EvCodeCheck")
@@ -262,7 +262,7 @@ BeginAgain2:
   '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   Sheets(SheetArray(1)).Select
   LR = Range("A" & Rows.Count).End(xlUp).Row
-  Range(CodeSystemCheckHeaders(0) & "1:" & CodeSystemCheckHeaders(0) & LR).SpecialCells(xlCellTypeVisible).Name = "PreviousEvCodes"
+  Range(PreviouslySubChckHeaders(0) & "1:" & PreviouslySubChckHeaders(0) & LR).SpecialCells(xlCellTypeVisible).Name = "PreviousEvCodes"
 
 
   ' SUB - checks each cell in the EvCodeCheck for matches and either assigns a match or returns 0
@@ -279,6 +279,7 @@ BeginAgain2:
   Next i
 
   ' Write the updated DataRange Array to the excel file
+  Sheets(FirstSheet).Select
   Range("EvCodeCheck").Value = EvCodeCheckAnswerArray
 
 
@@ -286,13 +287,13 @@ BeginAgain2:
   Application.DisplayAlerts = False
 
   For Each sheet In Worksheets
-    If sheet.Name = "CodeSystemCheck" Then
+    If sheet.Name = "PreviouslySubChck" Then
       sheet.Delete
     End If
   Next sheet
 
   ' Deletes the Code Lookup column
-  Sheets(SheetArray(0)).Select
+  Sheets(FirstSheet).Select
   Range("A1:A2").Select
   Range(Selection, Selection.End(xlToRight)).Name = "Header_row"
 
@@ -313,7 +314,7 @@ BeginAgain2:
   Application.EnableEvents = True
 
   ' Tells user program is completed
-  Sheets(SheetArray(0)).Select
+  Sheets(FirstSheet).Select
   Range("A1").Select
   MsgBox ("BORIS has completed the Previously Submitted Code Check. Check the newly added column. Blank = Not previously submitted.")
   Exit Sub
