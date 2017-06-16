@@ -25,21 +25,29 @@ Sub Unmapped_Codes_Sheet_Setup()
 
   Application.DisplayAlerts = True
 
-  Sheets(1).Select
+  ' Finds the name of the first sheet
+  For Each sheet In Worksheets
+    If sheet.Visible Then
+        FirstSheet = sheet.Name
+        Exit For
+        End If
+    Next sheet
 
-  If Sheets(1).AutoFilterMode = True Then
-    Sheets(1).AutoFilterMode = False
+  Sheets(FirstSheet).Select
+
+  If Sheets(FirstSheet).AutoFilterMode = True Then
+    Sheets(FirstSheet).AutoFilterMode = False
   End If
 
   ' Checks the current sheet. If it is in table format, convert it to range.
-  If Sheets(1).ListObjects.Count > 0 Then
-    With Sheets(1).ListObjects(1)
+  If Sheets(FirstSheet).ListObjects.Count > 0 Then
+    With Sheets(FirstSheet).ListObjects(1)
       Set rList = .Range
       .Unlist
     End With
   End If
 
-  Set sht = Worksheets(1)
+  Set sht = WorkSheets(FirstSheet)
   Set StartCell = Range("A1")
 
 
@@ -65,7 +73,7 @@ Sub Unmapped_Codes_Sheet_Setup()
   Range("A2").Select
 
   ' SUB - Finds Column Header Locations for The Combined Data Export
-  Sheets(1).Select
+  Sheets(FirstSheet).Select
   Range("A1").Select
   Range("A1", Selection.End(xlToRight)).Name = "Header_row"
 
@@ -80,7 +88,7 @@ Sub Unmapped_Codes_Sheet_Setup()
       End If
     Next Header
     If Header_Check = False Then
-      Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & "'" & Unmapped_Headers(i) & "'" & " on the " & Sheet1.Name & " Sheet....." & vbNewLine & vbNewLine & "However all is not lost! BORIS and you can do this!" & vbNewLine & vbNewLine & "To resolve the issue BORIS needs you to enter the letter of a column to use in place of the one he couldn't find." & vbNewLine & vbNewLine & "Look at the excel sheet behind this box and enter (in uppercase) the letter of the column you want to use in place of the missing one." & vbNewLine & vbNewLine & "If you don't want to replace data from another column in place of the missing one then enter the letter of an empty column(like T or something). If you would rather fix the issue within the file or program then click cancel.", "If I am BORIS who are you?")
+      Header_User_Response = InputBox("BORIS was unable to find the header:" & vbNewLine & "'" & Unmapped_Headers(i) & "'" & " on the " & FirstSheet & " Sheet....." & vbNewLine & vbNewLine & "However all is not lost! BORIS and you can do this!" & vbNewLine & vbNewLine & "To resolve the issue BORIS needs you to enter the letter of a column to use in place of the one he couldn't find." & vbNewLine & vbNewLine & "Look at the excel sheet behind this box and enter (in uppercase) the letter of the column you want to use in place of the missing one." & vbNewLine & vbNewLine & "If you don't want to replace data from another column in place of the missing one then enter the letter of an empty column(like T or something). If you would rather fix the issue within the file or program then click cancel.", "If I am BORIS who are you?")
 
       'If user hits cancel then close program.
       If Header_User_Response = vbNullString Then
@@ -94,9 +102,9 @@ Sub Unmapped_Codes_Sheet_Setup()
   Next i
 
   ' Copies the raw codes to the "To Review Sheet"
-  Set sht = Worksheets(1)
+  Set sht = WorkSheets(FirstSheet)
   With sht
-    Sheets(1).Copy After:=Sheets(Sheets.Count)
+    Sheets(FirstSheet).Copy After:=Sheets(Sheets.Count)
     ActiveSheet.Name = "To_Review"
   End With
 
@@ -131,21 +139,17 @@ Sub Unmapped_Codes_Sheet_Setup()
   ' Converts numbers stored as text to numbers
   Sheets("To_Review").Select
 
-  Range(Unmapped_Headers(4) & "2:" & Unmapped_Headers(4) & ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Select
+  Range(Unmapped_Headers(4) & "2:" & Unmapped_Headers(4).Select
+  Range(Selection, Selection.End(xlDown)).Select
   Selection.Name = "Codes"
 
   Set Rng = Range("Codes")
 
   For Each cell In Rng
-
-    If IsNumeric(cell) Then
-      cell.Select
-      With Selection
-        Selection.NumberFormat = "0"
-        .Value = .Value
-      End With
-
-    End If
+      If IsNumeric(cell) Then
+          cell.Value = Val(cell.Value)
+          cell.NumberFormat = "0"
+      End If
   Next cell
 
   MsgBox ("Program is completed. Ready for your analysis")
