@@ -139,7 +139,7 @@ Sub Unmapped_Codes_Sheet_Setup()
   ' Converts numbers stored as text to numbers
   Sheets("To_Review").Select
 
-  Range(Unmapped_Headers(4) & "2:" & Unmapped_Headers(4).Select
+  Range(Unmapped_Headers(4) & "2").Select
   Range(Selection, Selection.End(xlDown)).Select
   Selection.Name = "Codes"
 
