@@ -1,4 +1,4 @@
-Sub get_data()
+Sub Get_All_CS72_Validated()
 '
 ' get_data Macro
 '
