@@ -152,33 +152,21 @@ Sub Validated_Mappings_Setup()
       .Orientation = xlRowField
       .Position = 3
     End With
-    With .PivotFields("Registry")
+    With .PivotFields("Standard Code ID")
       .Orientation = xlRowField
       .Position = 4
     End With
-    With .PivotFields("Measure")
+    With .PivotFields("Raw Code ID")
       .Orientation = xlRowField
       .Position = 5
     End With
-    With .PivotFields("Concept Alias")
+    With .PivotFields("Standard Code System Display")
       .Orientation = xlRowField
       .Position = 6
     End With
-    With .PivotFields("Standard Code ID")
-      .Orientation = xlRowField
-      .Position = 7
-    End With
-    With .PivotFields("Raw Code ID")
-      .Orientation = xlRowField
-      .Position = 8
-    End With
-    With .PivotFields("Standard Code System Display")
-      .Orientation = xlRowField
-      .Position = 9
-    End With
     With .PivotFields("Raw Code System")
       .Orientation = xlRowField
-      .Position = 10
+      .Position = 7
     End With
 
   End With
