@@ -9,6 +9,8 @@ Sub Validated_Mappings_Setup()
   Dim LastRow As Long
   Dim LastColumn As Long
   Dim StartCell As Range
+  Dim PvtTbl As PivotTable
+  Dim pvtFld As PivotField
 
 
   'Helps improve performance
@@ -169,6 +171,15 @@ Sub Validated_Mappings_Setup()
       .Position = 7
     End With
 
+  End With
+
+  'hide Subtotals for all fields in the PivotTable .
+
+  With PvtTbl
+    For Each pvtFld In .PivotFields
+      pvtFld.Subtotals(1) = True
+      pvtFld.Subtotals(1) = False
+    Next pvtFld
   End With
 
 
