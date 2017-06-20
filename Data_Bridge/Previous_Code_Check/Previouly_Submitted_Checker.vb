@@ -56,8 +56,9 @@ Sub PrevCodeSubCheck()
     ' Do Nothing
   End If
   Set fso = Nothing
-  ' Checks to see if the PreviouslySubChck Sheet already exists.
 
+
+  ' Checks to see if the PreviouslySubChck Sheet already exists.
   Application.DisplayAlerts = False
 
   For Each sheet In Worksheets
@@ -178,6 +179,7 @@ BeginAgain2:
 
   ' SUB - FINDS THE COLUMN LOCATIONS OF THE RAW DATA Sheet
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
   ' Confirms header range.
   Sheets(FirstSheet).Select
   Range("A1:A2").Select
@@ -206,8 +208,8 @@ BeginAgain2:
     End If
   Next i
 
-  ' SUB - Finds the Unmapped Lookup Header on the PreviouslySubChck SheetArray
 
+  ' SUB - Finds the Unmapped Lookup Header on the PreviouslySubChck SheetArray
   Sheets(SheetArray(1)).Select
   Range("A1").Select
   Range(Selection, Selection.End(xlToRight)).Name = "Header_row"
@@ -236,12 +238,10 @@ BeginAgain2:
   Next i
 
 
-
   ' SUB - Creates Concat Column
   Sheets(FirstSheet).Select
   LR = Range(UnmappedHeaderLocations(0) & Rows.Count).End(xlUp).Row
   Range(UnmappedHeaderLocations(3) & "2:" & UnmappedHeaderLocations(3) & LR).Formula = "=CONCATENATE(" & Chr(34) & Client_Mnemonic & Chr(34) & "," & Chr(34) & "|" & Chr(34) & "," & UnmappedHeaderLocations(0) & "2" & "," & Chr(34) & "|" & Chr(34) & "," & UnmappedHeaderLocations(1) & "2" & ")"
-
 
   ' SUB - Assigns CodeLookup Column to an array in memory
   ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
