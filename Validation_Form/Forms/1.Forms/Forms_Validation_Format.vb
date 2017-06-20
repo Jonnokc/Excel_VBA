@@ -3,6 +3,7 @@ Sub Validation_Format()
 'Loops through the table and deletes all the extra header rows
 
 
+
     Dim RowToTest As Long
     Dim tbl As ListObject
     Dim Rng As Range
