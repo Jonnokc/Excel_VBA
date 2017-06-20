@@ -291,8 +291,10 @@ Sub Inappropriate_Data_Act_Setup()
     Columns("K").EntireColumn.Hidden = True
     Columns("L").EntireColumn.Hidden = True
   End With
-  ' Re-finds the last row
+
+  ' Re-finds the last row - would be false rows because of rows previously deleted, but not removed because we have not saved.
   LastRow = sht.Cells(sht.Rows.Count, "C").End(xlUp).Row
+
   ' Applies final sort
   With ActiveWorkbook.Worksheets("To_Review").ListObjects("To_Review_tbl").Sort
     .SortFields.Clear
