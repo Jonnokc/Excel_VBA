@@ -25,7 +25,7 @@ Sub Inappropriate_Previously_Sub()
   Previously_Sub_Headers = Array("Standard Code Display")
 
   ' PRIMARY - Import Previously Submitted
-  '''''''''''''''''''''''''''''''''''''''''''''
+  ''''''''''''''''''''''''''''''''''''''''
 
   ' SUB - Checks to confirm path to Access Database is mapped correctly.
   Set fso = CreateObject("scripting.filesystemobject")
@@ -172,10 +172,10 @@ BeginAgain1:
   ' SUB - Stores data into memory
   ''''''''''''''''''''''''''''''''''
 
-  Sheets(First_Sheet).Select
-  Set sht = Sheets(First_Sheet)
+  Sheets("To_Review").Select
+  Set sht = Sheets("To_Review")
 
-  With Sheets(First_Sheet)
+  With Sheets("To_Review")
     LastRow = sht.Cells(sht.Rows.Count, Data_Headers(0)).End(xlUp).Row
 
     ' stores the standard code display column to memory
@@ -214,7 +214,7 @@ BeginAgain1:
   Next i
 
   ' Write the updated DataRange Array to the excel file
-  Sheets(First_Sheet).Select
+  Sheets("To_Review").Select
   Range("Prev_Sub_Check").Value = DataCheckAnswerArray
 
   ' Close

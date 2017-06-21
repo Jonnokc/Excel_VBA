@@ -96,12 +96,6 @@ Sub Inappropriate_Data_Act_Setup()
       Set rList = .Range
       .Unlist
     End With
-    'Reverts the color of the range back to standard.
-    ' With rList
-    '   .Interior.ColorIndex = xlColorIndexNone
-    '   .Font.ColorIndex = xlColorIndexAutomatic
-    '   .Borders.LineStyle = xlLineStyleNone
-    ' End With
   End If
 
   Set sht = Worksheets(First_Sheet)
@@ -118,8 +112,10 @@ Sub Inappropriate_Data_Act_Setup()
   tbl.TableStyle = "TableStyleLight9"
 
 
+  ' SUB - Sorts the sheet by Count from largest to smallest
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   With Sheets(First_Sheet)
-    ' SUB - Sorts the sheet by Count from largest to smallest
+
     ActiveWorkbook.Worksheets(First_Sheet).ListObjects("Raw_Data_tbl").Sort. _
     SortFields.Clear
     ActiveWorkbook.Worksheets(First_Sheet).ListObjects("Raw_Data_tbl").Sort. _
@@ -133,7 +129,9 @@ Sub Inappropriate_Data_Act_Setup()
   End With
 
   ' SUB - Inserts New Columns and Splits Standard Code
+  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   With Sheets("To_Review")
+
     Sheets("To_Review").Select
     Columns(Headers(4) & ":" & Headers(4)).Select
     Columns(Headers(4) & ":" & Headers(4)).EntireColumn.Offset(0, 1).Insert
@@ -157,6 +155,7 @@ Sub Inappropriate_Data_Act_Setup()
   Application.DisplayAlerts = True
 
   ' SUB - Adds the new column Headers
+  '''''''''''''''''''''''''''''''''''''''''''''''
 
   ' Renames the Standard Code Display column
   Sheets("To_Review").Range(Headers(4) & "1").Select
@@ -193,6 +192,7 @@ Sub Inappropriate_Data_Act_Setup()
 
 
   ' SUB - Renames and stores location of Raw Code Columns
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
   ' Renames the Raw Code Headers
   Sheets("To_Review").Range(Headers(3) & "1").Select
@@ -209,12 +209,15 @@ Sub Inappropriate_Data_Act_Setup()
 
 
   ' SUB - Finds Column Header Locations for The Combined Data Export
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   Sheets("To_Review").Select
   Range("A1").Select
   Range("A1", Selection.End(xlToRight)).Name = "Header_row"
 
 
   ' SUB - Finds the columns of the new columns
+  '''''''''''''''''''''''''''''''''''''''''''''''''''
+
   For i = 0 To UBound(New_Headers)
     Header_Check = False
     For Each Header In Range("Header_row")
@@ -239,6 +242,47 @@ Sub Inappropriate_Data_Act_Setup()
 
   Next i
 
+
+  ' SUB - Adds the Flag Rule Column to the To Review
+  '''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+  ' Creates named range for header loop
+  Sheets("To_Review").Select
+  Range("A1").Select
+  Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+
+  ' Checks if header Prev_Sub_Check already exists. If it finds a hit, delete that column and start again.
+BeginAgain1:
+  For Each Header In Range("Header_row")
+    If InStr(1, Header, "Rules") Then
+      Header.EntireColumn.Delete
+      GoTo BeginAgain1
+    End If
+  Next Header
+
+  ' re-adds the Rules column
+  Sheets("To_Review").Select
+  ' Names The Column Matching Prev_Sub_Check Column
+  NextBlankCol = Mid(Cells(2, Columns.Count).End(xlToLeft).Offset(0, 1).Address, 2, 1)
+  Range(NextBlankCol & "1") = "Rules"
+
+  LastRow = sht.Cells(sht.Rows.Count, "C").End(xlUp).Row
+
+  ' Applies the Data Validation Dropdown
+  Range(NextBlankCol & "2:" & NextBlankCol & LastRow).Select
+  With Selection.Validation
+    .Delete
+    .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:= _
+    xlBetween, Formula1:="=Validation!$A$2:$A$5"
+    .IgnoreBlank = True
+    .InCellDropdown = True
+    .InputTitle = ""
+    .ErrorTitle = ""
+    .InputMessage = ""
+    .ErrorMessage = ""
+    .ShowInput = True
+    .ShowError = True
+  End With
 
   ' SUB - Formats "To_Review" Sheet as a table
   Sheets("To_Review").Select
@@ -268,10 +312,38 @@ Sub Inappropriate_Data_Act_Setup()
   Set tbl = ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes)
   tbl.Name = "To_Review_tbl"
   tbl.TableStyle = "TableStyleLight9"
+  Selection.ColumnWidth = 22.71
 
 
   ' Removes Duplicates from the Code ID Lists
   Sheets("To_Review").Range("To_Review_tbl[#All]").RemoveDuplicates Columns:=Array(Headers_Num(0), Headers_Num(1), Headers_Num(2), New_Headers_Num(3), New_Headers_Num(4)), Header:=xlYes
+
+
+  ' SUB - Deletes Rows < 1000
+  '''''''''''''''''''''''''''''''''
+
+  ' Creates named range for header loop
+  Sheets("To_Review").Select
+  Range("A1").Select
+  Range("A1", Selection.End(xlToRight)).Name = "Header_row"
+
+  For Each Header In Range("Header_row")
+    If Header.Value = "Count" Then
+      Count_Col_Loc = Mid(Header.Address, 2, 1)
+      Exit For
+    End If
+  Next Header
+
+  LastRow = sht.Cells(sht.Rows.Count, "C").End(xlUp).Row
+
+
+  ' Loops through all the rows and deletes ones with a count too low
+  For i = LastRow To 1 Step -1
+    If (Cells(i, Count_Col_Loc).Value) < 1000 Then
+      Cells(i, "A").EntireRow.Delete
+    End If
+  Next i
+
 
   ' Hides Columns Not needed
   With Sheets("To_Review")
@@ -303,5 +375,9 @@ Sub Inappropriate_Data_Act_Setup()
 
     .Apply
   End With
+
+  Sheets("To_Review").Select
+
+  MsgBox ("Program Completed")
 
 End Sub
