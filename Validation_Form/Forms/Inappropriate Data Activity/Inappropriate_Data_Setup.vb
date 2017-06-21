@@ -254,12 +254,6 @@ Sub Inappropriate_Data_Act_Setup()
       Set rList = .Range
       .Unlist
     End With
-    'Reverts the color of the range back to standard.
-    ' With rList
-    '   .Interior.ColorIndex = xlColorIndexNone
-    '   .Font.ColorIndex = xlColorIndexAutomatic
-    '   .Borders.LineStyle = xlLineStyleNone
-    ' End With
   End If
 
   Set sht = Worksheets("To_Review")
